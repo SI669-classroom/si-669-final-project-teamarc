@@ -8,7 +8,7 @@ import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 
-function GamesScreen(props) {
+function PlaysScreen(props) {
 
   return (
     <View style={styles.container}>
@@ -127,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GamesScreen;
+export default PlaysScreen;
