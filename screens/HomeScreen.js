@@ -18,7 +18,7 @@ function HomeScreen(props) {
      if (e.data.action.type === "GO_BACK"){
      e.preventDefault();
      }
-     console.log(e)
+    //  console.log(e)
    })
 
   }, []);
@@ -39,6 +39,13 @@ function HomeScreen(props) {
             Alert.alert("Sign In Error", error.message,[{ text: "OK" }])
           }
         }}
+      />
+      <FAB
+        title='Games Screen'
+        color='blue'
+        onPress={() =>
+          navigation.navigate('Games')
+        }
       />
     </View>
   );
