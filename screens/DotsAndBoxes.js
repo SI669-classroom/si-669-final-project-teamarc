@@ -7,9 +7,12 @@ import { Button } from "@rneui/base";
 import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
+import { getAuthUser } from "../AuthManager.js";
+import { addGame } from "../data/Actions.js";
 
 function DotsAndBoxesScreen(props) {
-
+  const dispatch = useDispatch();
+  const myKey = getAuthUser().uid;
   return (
     <View style={styles.container}>
       <LogoImage />
@@ -23,7 +26,7 @@ function DotsAndBoxesScreen(props) {
         </View>
 
 
-
+{/* THIS IS THE SEND BUTTON */}
         <View style={styles.allButtons}>
           <Button
             color="#FFD600"
@@ -39,9 +42,13 @@ function DotsAndBoxesScreen(props) {
               width: 200,
               margin:10
             }}
+            // ADD THE CREATE GAME FUNCTION HERE!!!!!!!!
             style={styles.gameButton}
             title={"Send Move"}
             onPress={() => {
+              let theGame = {type:'DotsAndBoxes', players:[myKey, 'free'], p1Moves:[1], p2Moves:[0], turn:'p2'}
+              dispatch(addGame(theGame))
+              props.navigation.navigate('Home')
             }}
           />
           

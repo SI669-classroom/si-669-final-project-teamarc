@@ -2,18 +2,40 @@ import { useState } from 'react';
 import { StyleSheet, View, FlatList } from "react-native";
 import { FAB } from "@rneui/base";
 import ListItem from "../components/ListItem";
-import { signOut } from '../AuthManager';
+import { getAuthUser, signOut } from '../AuthManager';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useEffect } from 'react';
 import LogoImage from '../components/LogoImage';
-
+import { loadGames } from '../data/Actions';
+import { Text } from 'react-native';
 function HomeScreen(props) {
   // const listItems = useSelector((state) => state.listItems);
   const dispatch = useDispatch();
   const { navigation, route } = props;
-  useEffect(() => {
+  // const subscribeToMessageBoard = () => {
+  //   const q = query(
+  //     collection(db, 'messageBoard'),
+  //     orderBy('timestamp', 'desc'),
+  //     limit(3)
+  //   );
+  //   onSnapshot(q, mbSnapshot => {
+  //     const newMessages = [];
+  //     mbSnapshot.forEach(mSnap => {
+  //       let newMessage = mSnap.data();
+  //       newMessage.key = mSnap.id;
+  //       newMessages.push(newMessage);
+  //     });
+  //     setMessages(newMessages);
+  //   }
+  // )};
 
+  // useEffect(()=>{
+  //   subscribeToMessageBoard();
+  // }, []);
+  useEffect(() => {
+    console.log(getAuthUser().uid)
+  dispatch(loadGames(getAuthUser().uid))
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
      if (e.data.action.type === "GO_BACK"){
@@ -23,12 +45,27 @@ function HomeScreen(props) {
    })
 
   }, []);
+  const myGames = useSelector((state)=>state.myGames)
+  console.log(myGames)
 
   return(
     <View style={styles.container}>
             <LogoImage />
       <View style={styles.listContainer}>
       </View>
+      <Text>Active Games</Text>
+      <FlatList
+          data={myGames}
+          renderItem={({item})=>{
+            return (
+              <View key={item.key}>
+              <Text>{item.type}</Text>
+              <Text>{item.key}</Text>
+              </View>
+            );
+          }}
+        />
+
       <FAB
         title='Make Game'
         color='green'

@@ -1,10 +1,10 @@
 
 
 import { initializeApp } from 'firebase/app';
-import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot } from 'firebase/firestore';
+import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot } from 'firebase/firestore';
 
 import { firebaseConfig } from '../Secrets';
-import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT } from '../Reducer';
+import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT, ADD_GAME, LOAD_GAMES } from '../Reducer';
 import { signIn, signOut } from '../AuthManager';
 
 const app = initializeApp(firebaseConfig);
@@ -39,11 +39,59 @@ const unsubscribeFromUsers = () => {
     usersSnapshotUnsub = undefined;
   }
 }
+const loadItems = () => {
+  return async (dispatch) => {
+    let querySnapshot = await getDocs(collection(db, 'todos'));
+    let newListItems = querySnapshot.docs.map(docSnap => {
+      return {
+        ...docSnap.data(),
+        key: docSnap.id
+      }
+    })
+    dispatch({
+      type: LOAD_ITEMS,
+      payload: {
+        newListItems: newListItems
+      }
+    });
+  }
+}
+const loadGames = (myUser) => {
+  return async (dispatch) => {
+    let q = query(collection(db, 'games'), where('players', 'array-contains', `${myUser}`));
+    let querySnapshot = await getDocs(q)
+    let newGamesList = querySnapshot.docs.map(docSnap => {
+      return {
+        ...docSnap.data(),
+        key: docSnap.id
+      }
+    })
+    dispatch({
+      type: LOAD_GAMES,
+      payload: {
+        newGames: newGamesList
+      }
+    });
+  }
+}
+
+const addGame = (game) => {
+  return async (dispatch) => {
+    const newGame = await addDoc(collection(db, 'games'), game);
+    const gameKey = newGame.id
+    dispatch({
+      type: ADD_GAME,
+      payload: {
+        newGame: {...game, key:gameKey}
+      }
+    });
+  }
+}
 const addCurrentChatMessage = (message) => {
   return async (dispatch, getState) => {
     const currentChat = getState().currentChat;
     const messageCollection = collection(db, 'chats', currentChat.id, 'messages');
-    await addDoc(messageCollection, message); // no need to dispatch
+    await addDoc(messageCollection, message); // no need to dispatch because they are already being listened to
   }
 }
 const addOrSelectChat = (user1id, user2id) => {
@@ -181,4 +229,4 @@ const addUser = (user) => {
   }
 }
 
-export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, }
+export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames }

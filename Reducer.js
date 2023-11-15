@@ -1,10 +1,12 @@
 
 // constants for action types
+const ADD_GAME = 'ADD_GAME';
 const ADD_ITEM = 'ADD_ITEM';
 const UPDATE_ITEM = 'UPDATE_ITEM';
 const DELETE_ITEM = 'DELETE_ITEM';
 const CHANGE_COLOR = 'CHANGE_COLOR';
 const SIGN_OUT = 'SIGN_OUT';
+const LOAD_GAMES = 'LOAD_GAMES';
 
 const changeColor = (state, newColor) => {
   console.log('Changed it to:', newColor)
@@ -13,7 +15,21 @@ const changeColor = (state, newColor) => {
     myColor: newColor
   } 
 }
+const addGame = (state, newGame) => {
+  let {myGames} = state;
+  let newGames = myGames.concat(newGame)
+  return { 
+    ...state, 
+    myGames: newGames
+  }
+}
+const loadGames = (state, games) => {
+  return {
+    ...state, 
+    myGames: games
+  }
 
+}
 const signOut = (state, newuser) => {
   console.log(newuser)
   return {
@@ -65,12 +81,17 @@ const initListItems = [
 
 const initialState = {
   listItems: initListItems,
-  myColor: 'Red'
+  myColor: 'Red',
+  myGames: []
 }
 
 // The Reducer function! Here it is!
 function rootReducer(state=initialState, action) {
   switch (action.type) {
+    case ADD_GAME:
+      return addGame(state, action.payload.newGame)
+    case LOAD_GAMES:
+      return loadGames(state, action.payload.newGames)
     case ADD_ITEM:
       return addItem(state, action.payload.text);
     case UPDATE_ITEM:
@@ -86,4 +107,4 @@ function rootReducer(state=initialState, action) {
   }
 }
 
-export { rootReducer, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, CHANGE_COLOR, SIGN_OUT };
+export { rootReducer, ADD_GAME, LOAD_GAMES, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, CHANGE_COLOR, SIGN_OUT };
