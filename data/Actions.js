@@ -167,7 +167,9 @@ const addUser = (user) => {
     userToAdd = {
       displayName: user.displayName,
       email: user.email,
-      key: user.uid
+      key: user.uid, 
+      avatar: [0,0,0,'yellow'], 
+      points: 0
     };
     await setDoc(doc(db, 'users', user.uid), userToAdd);
     // dispatch({

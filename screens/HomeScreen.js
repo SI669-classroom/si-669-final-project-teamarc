@@ -6,6 +6,7 @@ import { signOut } from '../AuthManager';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useEffect } from 'react';
+import LogoImage from '../components/LogoImage';
 
 function HomeScreen(props) {
   // const listItems = useSelector((state) => state.listItems);
@@ -25,10 +26,23 @@ function HomeScreen(props) {
 
   return(
     <View style={styles.container}>
+            <LogoImage />
       <View style={styles.listContainer}>
-        
-
       </View>
+      <FAB
+        title='Make Game'
+        color='green'
+        onPress={() => {
+          navigation.navigate('Games', {type: 'new'})
+        }}
+      />
+      <FAB
+        title='Find Game'
+        color='orange'
+        onPress={() => {
+          navigation.navigate('Games', {type: 'find'})
+        }}
+      />
       <FAB
         title='Sign Out'
         color='darkblue'
@@ -53,10 +67,12 @@ function HomeScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop:'12%',
     flex: 1,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: '#0085D1'
   },
   listContainer: {
     flex: 0.6,

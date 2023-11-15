@@ -125,7 +125,7 @@ function SignupBox({navigation}) {
           onPress={async () => {
             try {
               const newUser = await signUp(displayName, email, password);
-              console.log('about to add', newUser);
+              // console.log('about to add', newUser);
               dispatch(addUser(newUser));
             } catch(error) {
               Alert.alert("Sign Up Error", error.message,[{ text: "OK" }])

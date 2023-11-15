@@ -8,66 +8,23 @@ import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 
-function PlaysScreen(props) {
+function DotsAndBoxesScreen(props) {
 
   return (
     <View style={styles.container}>
       <LogoImage />
       <View style={styles.header}>
 
-        <TouchableOpacity 
-         onPress={()=>{props.navigation.navigate('TicTacToe', {type:'new'})}}
-        >
-        <View style={styles.gameContainer}>
-          <Image
-            style={styles.image}
-            source={require('../images/TictactoeIcon.png')} />
-          <Text style={styles.gameText}>Tic-Tac-Toe</Text>
-        </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-         onPress={()=>{props.navigation.navigate('DotsAndBoxes', {type:'new'})}}
-        >
         <View style={styles.gameContainer}>
           <Image
             style={styles.image}
             source={require('../images/DotsBoxesIcon.png')} />
           <Text style={styles.gameText}>Dots and Boxes</Text>
         </View>
-        </TouchableOpacity>
 
-        <TouchableOpacity
-         onPress={()=>{props.navigation.navigate('HangMan', {type:'new'})}}
-        >
-        <View style={styles.gameContainer}>
-          <Image
-            style={styles.image}
-            source={require('../images/HangManIcon.png')} />
-          <Text style={styles.gameText}>Hang Man</Text>
-        </View>
-        </TouchableOpacity>
+
 
         <View style={styles.allButtons}>
-          {/* <Button
-            color="#FFD600"
-            buttonStyle={{
-              backgroundColor: "#FFD600",
-              borderRadius: 8,
-            }}
-            titleStyle={{
-              color: "black",
-              fontSize: 24,
-            }}
-            containerStyle={{
-              width: 200,
-              margin:10
-            }}
-            style={styles.gameButton}
-            title={"Find Game"}
-            onPress={() => {
-            }}
-          />
           <Button
             color="#FFD600"
             buttonStyle={{
@@ -83,10 +40,11 @@ function PlaysScreen(props) {
               margin:10
             }}
             style={styles.gameButton}
-            title={"Make A Game"}
+            title={"Send Move"}
             onPress={() => {
             }}
-          /> */}
+          />
+          
         </View>
       </View>
     </View>
@@ -141,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlaysScreen;
+export default DotsAndBoxesScreen;
