@@ -21,7 +21,7 @@ function DotsAndBoxesScreen(props) {
         <View style={styles.gameContainer}>
           <Image
             style={styles.image}
-            source={require('../images/DotsBoxesIcon.png')} />
+            source={require('../images/DotsAndBoxesIcon.png')} />
           <Text style={styles.gameText}>Dots and Boxes</Text>
         </View>
 

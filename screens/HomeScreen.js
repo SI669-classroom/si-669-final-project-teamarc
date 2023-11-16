@@ -9,9 +9,11 @@ import { useEffect } from 'react';
 import LogoImage from '../components/LogoImage';
 import { loadGames } from '../data/Actions';
 import { Text } from 'react-native';
+import { Image } from 'react-native';
 function HomeScreen(props) {
   // const listItems = useSelector((state) => state.listItems);
   const dispatch = useDispatch();
+  const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
   const { navigation, route } = props;
   // const subscribeToMessageBoard = () => {
   //   const q = query(
@@ -34,7 +36,7 @@ function HomeScreen(props) {
   //   subscribeToMessageBoard();
   // }, []);
   useEffect(() => {
-    console.log(getAuthUser().uid)
+    // console.log(getAuthUser().uid)
   dispatch(loadGames(getAuthUser().uid))
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
@@ -46,7 +48,7 @@ function HomeScreen(props) {
 
   }, []);
   const myGames = useSelector((state)=>state.myGames)
-  console.log(myGames)
+  // console.log(myGames)
 
   return(
     <View style={styles.container}>
@@ -57,10 +59,14 @@ function HomeScreen(props) {
       <FlatList
           data={myGames}
           renderItem={({item})=>{
+            let img = `../images/${item.type}Icon.png`
             return (
-              <View key={item.key}>
+              <View key={item.key} style={styles.gameContainer}>
               <Text>{item.type}</Text>
-              <Text>{item.key}</Text>
+              <Image
+            style={styles.image}
+            // {item.type ==='DotsAndBoxes' ? source='../images/DotsAndBoxesIcon.png':null}
+            source={pics[item.type]} />
               </View>
             );
           }}
@@ -117,6 +123,30 @@ const styles = StyleSheet.create({
     paddingLeft: '10%',
     paddingTop: '10%'
   },
+  gameContainer: {
+    backgroundColor: 'white',
+    flexWrap:'wrap',
+    width: 350,
+    flexDirection: 'row',
+    justifyContent:'space-between',
+    alignItems: 'center',
+    // height: 90,
+    paddingLeft: 20,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  image: {
+    height: 80,
+    width: 80,
+    marginRight: 20,
+    flexBasis:'end',
+    // flexWrap:'wrap-reverse',
+    justifyContent: 'flex-end',
+    // alignContent:'center',
+    alignItems:'flex-end',
+    alignSelf:'center'
+  },
+
 });
 
 export default HomeScreen;
