@@ -9,7 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 
 function PlaysScreen(props) {
-
+const blanks = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+const boxes = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   return (
     <View style={styles.container}>
       <LogoImage />
@@ -27,7 +28,7 @@ function PlaysScreen(props) {
         </TouchableOpacity>
 
         <TouchableOpacity
-         onPress={()=>{props.navigation.navigate('DotsAndBoxes', {type:'new'})}}
+         onPress={()=>{props.navigation.navigate('DotsAndBoxes', {board:blanks, boxes:boxes})}}
         >
         <View style={styles.gameContainer}>
           <Image

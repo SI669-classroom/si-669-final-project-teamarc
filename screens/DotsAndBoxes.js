@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Dimensions, StyleSheet, View, Text, FlatList, Image,
   TouchableOpacity, TouchableHighlight
@@ -13,6 +13,28 @@ import Small from "../components/Small.js";
 import Long from "../components/Long.js";
 
 function DotsAndBoxesScreen(props) {
+  const { navigation, route } = props;
+  const [theLines, setTheLines] = useState(route.params.board);
+  const [theBoxes, setBoxes] =useState();
+  const [turns, setTurns] = useState(1);
+  const [myMoves, setMyMoves] = useState([]);
+
+  const tap = (num) => {
+    console.log(turns)
+    if (turns === 0 ) {
+      return 
+    }
+    let next = [...myMoves];
+    next.push(num)
+    console.log('next is: ',next)
+    setMyMoves(next)
+    
+    let grid = [...theLines]
+    grid[num]='a'
+    setTheLines(grid)
+    // console.log(theLines)
+    setTurns(0)
+  }
   const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
   return (
@@ -26,40 +48,40 @@ function DotsAndBoxesScreen(props) {
             source={require('../images/DotsAndBoxesIcon.png')} />
           <Text style={styles.gameText}>Dots and Boxes</Text>
         </View>
-
+        {/* THINGS ARE LONG OR SMALL WIDTH                  SMALL WIDTH       OR        LONG WIDTH */}
       <View style={styles.container2}>
-        <View style={styles.theGame1}>
-          <Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small />
+        <View style={styles.smallRow}>
+          <Small /><Long  num={0} press={tap} theLines={theLines}/><Small /><Long  num={1} press={tap} theLines={theLines}/><Small /><Long  num={2} press={tap} theLines={theLines}/><Small /><Long  num={3} press={tap} theLines={theLines}/><Small /><Long  num={4} press={tap} theLines={theLines}/><Small />
         </View>
-        <View style={styles.theGame}>
-          <Small t='b' color='blue'/><Long /><Small t='b'/><Long /><Small t='b' /><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/>
+        <View style={styles.largeRow}>
+          <Small  num={5} press={tap} theLines={theLines}/><Long /><Small  num={6} press={tap} theLines={theLines}/><Long /><Small  num={7} press={tap} theLines={theLines} /><Long /><Small  num={8} press={tap} theLines={theLines}/><Long /><Small  num={9} press={tap} theLines={theLines}/><Long /><Small  num={10} press={tap} theLines={theLines}/>
         </View>
-        <View style={styles.theGame1}>
-          <Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small />
+        <View style={styles.smallRow}>
+        <Small /><Long  num={11} press={tap} theLines={theLines}/><Small /><Long  num={12} press={tap} theLines={theLines}/><Small /><Long  num={13} press={tap} theLines={theLines}/><Small /><Long  num={14} press={tap} theLines={theLines}/><Small /><Long  num={15} press={tap} theLines={theLines}/><Small />
         </View>
-        <View style={styles.theGame}>
-          <Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/>
+        <View style={styles.largeRow}>
+        <Small  num={16} press={tap} theLines={theLines}/><Long /><Small  num={17} press={tap} theLines={theLines}/><Long /><Small  num={18} press={tap} theLines={theLines} /><Long /><Small  num={19} press={tap} theLines={theLines}/><Long /><Small  num={20} press={tap} theLines={theLines}/><Long /><Small  num={21} press={tap} theLines={theLines}/>
         </View>
-        <View style={styles.theGame1}>
-          <Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small />
+        <View style={styles.smallRow}>
+        <Small /><Long  num={22} press={tap} theLines={theLines}/><Small /><Long  num={23} press={tap} theLines={theLines}/><Small /><Long  num={24} press={tap} theLines={theLines}/><Small /><Long  num={25} press={tap} theLines={theLines}/><Small /><Long  num={26} press={tap} theLines={theLines}/><Small />
         </View>
-        <View style={styles.theGame}>
-          <Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/>
+        <View style={styles.largeRow}>
+        <Small  num={27} press={tap} theLines={theLines}/><Long /><Small  num={28} press={tap} theLines={theLines}/><Long /><Small  num={29} press={tap} theLines={theLines} /><Long /><Small  num={30} press={tap} theLines={theLines}/><Long /><Small  num={31} press={tap} theLines={theLines}/><Long /><Small  num={32} press={tap} theLines={theLines}/>
         </View>
-        <View style={styles.theGame1}>
-          <Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small />
+        <View style={styles.smallRow}>
+        <Small /><Long  num={33} press={tap} theLines={theLines}/><Small /><Long  num={34} press={tap} theLines={theLines}/><Small /><Long  num={35} press={tap} theLines={theLines}/><Small /><Long  num={36} press={tap} theLines={theLines}/><Small /><Long  num={37} press={tap} theLines={theLines}/><Small />
         </View>
-        <View style={styles.theGame}>
-          <Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/>
+        <View style={styles.largeRow}>
+        <Small  num={38} press={tap} theLines={theLines}/><Long /><Small  num={39} press={tap} theLines={theLines}/><Long /><Small  num={40} press={tap} theLines={theLines} /><Long /><Small  num={41} press={tap} theLines={theLines}/><Long /><Small  num={42} press={tap} theLines={theLines}/><Long /><Small  num={43} press={tap} theLines={theLines}/>
         </View>
-        <View style={styles.theGame1}>
-          <Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small />
+        <View style={styles.smallRow}>
+        <Small /><Long  num={44} press={tap} theLines={theLines}/><Small /><Long  num={45} press={tap} theLines={theLines}/><Small /><Long  num={46} press={tap} theLines={theLines}/><Small /><Long  num={47} press={tap} theLines={theLines}/><Small /><Long  num={48} press={tap} theLines={theLines}/><Small />
         </View>
-        <View style={styles.theGame}>
-          <Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/><Long /><Small t='b'/>
+        <View style={styles.largeRow}>
+        <Small  num={49} press={tap} theLines={theLines}/><Long /><Small  num={50} press={tap} theLines={theLines}/><Long /><Small  num={51} press={tap} theLines={theLines} /><Long /><Small  num={52} press={tap} theLines={theLines}/><Long /><Small  num={53} press={tap} theLines={theLines}/><Long /><Small  num={54} press={tap} theLines={theLines}/>
         </View>
-        <View style={styles.theGame1}>
-          <Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small /><Long t='b'/><Small />
+        <View style={styles.smallRow}>
+        <Small /><Long  num={55} press={tap} theLines={theLines}/><Small /><Long  num={56} press={tap} theLines={theLines}/><Small /><Long  num={57} press={tap} theLines={theLines}/><Small /><Long  num={58} press={tap} theLines={theLines}/><Small /><Long  num={59} press={tap} theLines={theLines}/><Small />
         </View>
       </View>
 
@@ -111,8 +133,8 @@ const styles = StyleSheet.create({
   container2: {
     // marginTop:20,
     flex: .8,
-    width: '100%',
-    height: '60%',
+    width: '90%',
+    height: '70%',
     // paddingTop: '12%',
     justifyContent: 'center',
     alignItems:'center',
@@ -120,21 +142,21 @@ const styles = StyleSheet.create({
     // backgroundColor: '#000'
   },
 
-  theGame: {
+  largeRow: {
     flexDirection:'row',
     // flexWrap:'wrap',
     // height:'10%',
-    flex: .1385,
-    backgroundColor:'#999',
+    flex: .1485,
+    backgroundColor:'white',
     borderRadius: 4,
   },
-  theGame1: {
+  smallRow: {
     flexDirection:'row',
     // flexWrap:'wrap',
     // height:'10%',
-    flex:.028,
-    backgroundColor:'#999',
-    borderRadius: 4,  
+    flex:.0476,
+    backgroundColor:'white',
+    borderRadius: 5,  
   },
   image: {
     height: 80,
@@ -160,13 +182,13 @@ const styles = StyleSheet.create({
   },
   scoreContainer: {
     backgroundColor: 'white',
-    width: 350,
+    // width: 350,
     flexDirection: 'row',
     alignItems: 'center',
     height: 90,
     padding: 20,
     borderRadius: 10,
-    // marginBottom: 20,
+    marginBottom: 20,
   },
 });
 
