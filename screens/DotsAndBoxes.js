@@ -19,6 +19,9 @@ function DotsAndBoxesScreen(props) {
   const [turns, setTurns] = useState(1);
   const [myMoves, setMyMoves] = useState([]);
 
+  // Need a way to check game logic for player turn
+
+
   const tap = (num) => {
     console.log(turns)
     if (turns === 0 ) {
