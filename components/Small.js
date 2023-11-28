@@ -19,6 +19,14 @@ function Small(props) {
          </TouchableOpacity>
       )
    }
+   if (props.theLines[props.num] === 'b') {
+      return (
+         <TouchableOpacity style={[styles.button, {backgroundColor:'red'}]} >
+         <View>
+         </View>
+         </TouchableOpacity>
+      )
+   }
 
       return (
          <TouchableOpacity style={[styles.button, {backgroundColor: props.color ?? '#CCC'}]} onPress={()=> {props.press(props.num)}}>

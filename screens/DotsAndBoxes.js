@@ -11,29 +11,64 @@ import { getAuthUser } from "../AuthManager.js";
 import { addGame } from "../data/Actions.js";
 import Small from "../components/Small.js";
 import Long from "../components/Long.js";
+import { dotsBlank } from "../data/DotsBlank.js";
 
 function DotsAndBoxesScreen(props) {
   const { navigation, route } = props;
-  const [theLines, setTheLines] = useState(route.params.board);
-  const [theBoxes, setBoxes] =useState();
+  const [theLines, setTheLines] = useState(dotsBlank.board);
+  const [theBoxes, setBoxes] =useState(dotsBlank.boxes);
   const [turns, setTurns] = useState(1);
   const [myMoves, setMyMoves] = useState([]);
-
+  const [sendGame, setSendGame] = useState(dotsBlank)
   // Need a way to check game logic for player turn
+  const theGames = useSelector((state) => state.myGames);
+  // console.log(dotsBlank)
+  useEffect(()=>{
+    if (route.params.type === 'free') {
+      // TODO --- Free Game Stuff
 
+    }
+    if (route.params.type === 'new') {
+      let current = {...sendGame, players:[getAuthUser().uid, 'free']};
+      setSendGame(current)
+      // TODO --- New Game Stuff
+
+    }
+   else {
+    // Existing Game Stuff
+    let thisGame = theGames.filter(elem=>elem.key === route.params.type);
+    // console.log('my filtered out game', thisGame);
+    setSendGame(thisGame[0]);
+    setTheLines(thisGame[0].board);
+    setBoxes(thisGame[0].boxes);
+    if (getAuthUser().uid === thisGame[0].players[0] && thisGame[0].turn ==='p2'){
+      setTurns(0)
+    }
+    if (getAuthUser().uid === thisGame[0].players[1] && thisGame[0].turn ==='p1'){
+      setTurns(0)
+    }
+   }
+
+   return(()=>{console.log('detached')})
+  }, []);
 
   const tap = (num) => {
-    console.log(turns)
+    // console.log(turns)
+
     if (turns === 0 ) {
+      console.log('No moves left')
       return 
     }
+
     let next = [...myMoves];
     next.push(num)
     console.log('next is: ',next)
     setMyMoves(next)
     
     let grid = [...theLines]
-    grid[num]='a'
+    if (getAuthUser().uid === sendGame.players[0]){
+      grid[num]='a'}
+    else {grid[num]='b'}
     setTheLines(grid)
     // console.log(theLines)
     setTurns(0)
@@ -108,11 +143,14 @@ function DotsAndBoxesScreen(props) {
             style={styles.gameButton}
             title={"Send Move"}
             onPress={() => {
-              let theGame = {type:'DotsAndBoxes', players:[myKey, 'free'], p1Moves:[1], p2Moves:[0], turn:'p2'}
+              if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
+              let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
               dispatch(addGame(theGame))
               props.navigation.navigate('Home')
+              }
             }}
           />
+          {/* TODO --- Want to later add a Redo button so they don't have to close out and get back in to select a different line. This would require changing the board(lines) based on moves and then emptying out moves. Can probably map over moves and then setMoves to [].  */}
           
         </View>
       </View>

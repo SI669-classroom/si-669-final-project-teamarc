@@ -56,10 +56,13 @@ const loadItems = () => {
     });
   }
 }
+// Called on HomePage to Load the Users Game
 const loadGames = (myUser) => {
   return async (dispatch) => {
     let q = query(collection(db, 'games'), where('players', 'array-contains', `${myUser}`));
+    
     let querySnapshot = await getDocs(q)
+    console.log((querySnapshot.docs).length)
     let newGamesList = querySnapshot.docs.map(docSnap => {
       return {
         ...docSnap.data(),

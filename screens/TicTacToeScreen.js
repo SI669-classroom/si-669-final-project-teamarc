@@ -11,7 +11,11 @@ import { getAuthUser } from "../AuthManager.js";
 import { addGame } from "../data/Actions.js";
 
 function TicTacToeScreen(props) {
+  useEffect(()=>{
+    console.log('In TicTacToe');
 
+    return(()=>{console.log('Left TicTacToe')})
+  }, [])
   const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
   return (

@@ -7,13 +7,15 @@ import { Button } from "@rneui/base";
 import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
+import { getAuthUser } from "../AuthManager.js";
 
 function PlaysScreen(props) {
-const blanks = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-const boxes = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
   return (
     <View style={styles.container}>
       <LogoImage />
+      {props.route.params.type === 'new' ? <Text>Make A Game</Text>: null}
+        {props.route.params.type === 'find' ? <Text>Find A Game</Text>: null}
       <View style={styles.header}>
 
         <TouchableOpacity 
@@ -28,7 +30,7 @@ const boxes = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         </TouchableOpacity>
 
         <TouchableOpacity
-         onPress={()=>{props.navigation.navigate('DotsAndBoxes', {board:blanks, boxes:boxes})}}
+         onPress={()=>{props.navigation.navigate('DotsAndBoxes', {type:'new'})}}
         >
         <View style={styles.gameContainer}>
           <Image

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, View, FlatList } from "react-native";
+import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
 import { FAB } from "@rneui/base";
 import ListItem from "../components/ListItem";
 import { getAuthUser, signOut } from '../AuthManager';
@@ -11,7 +11,7 @@ import { loadGames } from '../data/Actions';
 import { Text } from 'react-native';
 import { Image } from 'react-native';
 function HomeScreen(props) {
-  // const listItems = useSelector((state) => state.listItems);
+  // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
   const { navigation, route } = props;
@@ -37,6 +37,7 @@ function HomeScreen(props) {
   // }, []);
   useEffect(() => {
     // console.log(getAuthUser().uid)
+    
   dispatch(loadGames(getAuthUser().uid))
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
@@ -61,6 +62,9 @@ function HomeScreen(props) {
           renderItem={({item})=>{
             let img = `../images/${item.type}Icon.png`
             return (
+              <TouchableOpacity
+                onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
+              >
               <View key={item.key} style={styles.gameContainer}>
               <Text>{item.type}</Text>
               <Image
@@ -68,6 +72,7 @@ function HomeScreen(props) {
             // {item.type ==='DotsAndBoxes' ? source='../images/DotsAndBoxesIcon.png':null}
             source={pics[item.type]} />
               </View>
+              </TouchableOpacity>
             );
           }}
         />
@@ -101,7 +106,11 @@ function HomeScreen(props) {
         title='Games Screen'
         color='blue'
         onPress={() =>
-          navigation.navigate('Games')
+          {
+          navigation.navigate('TicTacToe');
+          navigation.navigate('Home');
+          navigation.navigate('HangMan')
+          }
         }
       />
     </View>
