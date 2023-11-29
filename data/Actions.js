@@ -14,6 +14,25 @@ let usersSnapshotUnsub = undefined;
 let chatSnapshotUnsub = undefined;
 
 let snapshotUnsubscribe = undefined;
+const subscribeToUserUpdates = () => {
+  if (snapshotUnsubscribe) {
+    snapshotUnsubscribe();
+  }
+  return (dispatch) => {
+    snapshotUnsubscribe = onSnapshot(collection(db, 'users'), usersSnapshot => {
+      const updatedUsers = usersSnapshot.docs.map(uSnap => {
+        console.log(uSnap.data());
+        return uSnap.data(); // already has key?
+      });
+      dispatch({
+        type: LOAD_USERS,
+        payload: {
+          users: updatedUsers
+        }
+      });
+    });
+  }
+}
 // This is mine
 const subToGames = () => {
   if (snapshotUnsubscribe) {
@@ -110,12 +129,12 @@ const addGame = (game) => {
   return async (dispatch) => {
     const newGame = await addDoc(collection(db, 'games'), game);
     const gameKey = newGame.id
-    dispatch({
-      type: ADD_GAME,
-      payload: {
-        newGame: {...game, key:gameKey}
-      }
-    });
+    // dispatch({
+    //   type: ADD_GAME,
+    //   payload: {
+    //     newGame: {...game, key:gameKey}
+    //   }
+    // });
   }
 }
 const updateGame = (game) => {
@@ -129,17 +148,21 @@ const updateGame = (game) => {
     });    
   }
 }
-const joinGame = (game) => {
-  return async (dispatch) => {
-  await setDoc(doc(db, 'games', game.key), game)
+// const joinGame = (game) => {
+//   return async (dispatch) => {
+//   await setDoc(doc(db, 'games', game.key), game)
 
-  dispatch({
-    type: ADD_GAME,
-    payload: {
-      newGame: game
-    }
-  });
-  }
+//   // dispatch({
+//   //   type: ADD_GAME,
+//   //   payload: {
+//   //     newGame: game
+//   //   }
+//   // });
+//   // Think I don't need this because it is already being loaded.
+//   }
+// }
+const joinGame = (game) => {
+ setDoc(doc(db, 'games', game.key), game)
 }
 const addCurrentChatMessage = (message) => {
   return async (dispatch, getState) => {

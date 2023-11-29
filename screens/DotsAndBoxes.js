@@ -36,6 +36,7 @@ function DotsAndBoxesScreen(props) {
     }
    else {
     // Existing Game Stuff
+    console.log(route.params.type)
     let thisGame = theGames.filter(elem=>elem.key === route.params.type);
     // console.log('my filtered out game', thisGame);
     setSendGame(thisGame[0]);
@@ -156,7 +157,7 @@ function DotsAndBoxesScreen(props) {
                   dispatch(updateGame(theGame))
                   props.navigation.navigate('Home')
                   }
-                else {
+                if (getAuthUser().uid === sendGame.players[1] && sendGame.turn ==='p2' && turns === 0) {
                   let theGame = {...sendGame, p2:myMoves, turn:'p1', board: theLines, boxes: theBoxes}
                   dispatch(updateGame(theGame))
                   props.navigation.navigate('Home')                  

@@ -57,7 +57,7 @@ function PlaysScreen(props) {
             }
             else {
               // TODO --- Find a way to wait for reducer to update before navigating to the correct game. Can maybe navigate to home with a item property to say when get here go to this game?
-              dispatch(joinGame(nextGame))
+              joinGame(nextGame)
               props.navigation.navigate('Home')
             }
           }}
