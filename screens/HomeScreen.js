@@ -7,9 +7,10 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useEffect } from 'react';
 import LogoImage from '../components/LogoImage';
-import { loadGames } from '../data/Actions';
+import { loadGames, subToGames } from '../data/Actions';
 import { Text } from 'react-native';
 import { Image } from 'react-native';
+import { collection, query } from 'firebase/firestore';
 function HomeScreen(props) {
   // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
@@ -35,10 +36,12 @@ function HomeScreen(props) {
   // useEffect(()=>{
   //   subscribeToMessageBoard();
   // }, []);
+
+
   useEffect(() => {
     // console.log(getAuthUser().uid)
     
-  dispatch(loadGames(getAuthUser().uid))
+    dispatch(subToGames());
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
      if (e.data.action.type === "GO_BACK"){
@@ -47,7 +50,7 @@ function HomeScreen(props) {
     //  console.log(e)
    })
 
-  }, []);
+  }, [myGames]);
   const myGames = useSelector((state)=>state.myGames)
   // console.log(myGames)
 

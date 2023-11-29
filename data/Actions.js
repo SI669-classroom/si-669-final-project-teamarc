@@ -1,11 +1,11 @@
 
 
 import { initializeApp } from 'firebase/app';
-import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot } from 'firebase/firestore';
+import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot, limit } from 'firebase/firestore';
 
 import { firebaseConfig } from '../Secrets';
-import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT, ADD_GAME, LOAD_GAMES } from '../Reducer';
-import { signIn, signOut } from '../AuthManager';
+import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT, ADD_GAME, LOAD_GAMES, UPDATE_GAME } from '../Reducer';
+import { getAuthUser, signIn, signOut } from '../AuthManager';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -13,26 +13,54 @@ const db = getFirestore(app);
 let usersSnapshotUnsub = undefined;
 let chatSnapshotUnsub = undefined;
 
-const subscribeToUserUpdates = () => {
-  if (usersSnapshotUnsub) {
-    usersSnapshotUnsub();
+let snapshotUnsubscribe = undefined;
+// This is mine
+const subToGames = () => {
+  if (snapshotUnsubscribe) {
+    snapshotUnsubscribe();
   }
+  const q = query(collection(db,'games'),where('players','array-contains',`${getAuthUser().uid}`));
   return (dispatch) => {
-    usersSnapshotUnsub =  onSnapshot(collection(db, 'users'), usersSnapshot => {
-      const updatedUsers = usersSnapshot.docs.map(uSnap => {
-        console.log(uSnap.data());
-        return uSnap.data(); // already has key?
-      });
-      dispatch({
-        type: LOAD_USERS,
-        payload: {
-          users: updatedUsers
-        }
-      });
+  snapshotUnsubscribe = onSnapshot(q, gamesSnapshot => {
+    const updatedGames = gamesSnapshot.docs.map(gSnap => {
+      console.log(gSnap.id);
+      return gSnap.data();
     });
-  }
+    dispatch({
+      type: LOAD_GAMES,
+      payload: {
+        newGames: updatedGames
+      }
+    });
+  })
+}
 }
 
+
+
+
+
+
+
+
+// Called in PlaysScreen   Syr6l9enGBZt3uoRG1JokS6jwqO2
+const gettingGame = async (type, user) => {
+  // let q = query(collection(db,'games'),where('players','not-in',['Syr6l9enGBZt3uoRG1JokS6jwqO2','free']),where('players','array-contains','free'),where('type','==',`${type}`))
+  let q = query(collection(db,'games'),where('players','!=',[`${user}`,'free']),where('players','array-contains','free'),where('type','==',`${type}`));
+  let n = await getDocs(q,limit(1));
+  if (n.docs.length < 1 ) {
+    // No matches found
+    return 0
+  }
+  // ToDo --- Need to setDoc to contain current player so no one else can join
+  let m = n.docs[0]
+  // console.log(m.data())
+  let newPlayers = [...m.data().players];
+  newPlayers[1]=user;
+  nGame = {...m.data(), players:newPlayers, key:m.id}
+  // console.log(nGame)
+  return nGame
+}
 const unsubscribeFromUsers = () => {
   if (usersSnapshotUnsub) {
     usersSnapshotUnsub();
@@ -88,6 +116,29 @@ const addGame = (game) => {
         newGame: {...game, key:gameKey}
       }
     });
+  }
+}
+const updateGame = (game) => {
+  return async (dispatch) => {
+    setDoc(doc(db, 'games', game.key), game)
+    dispatch({
+      type: UPDATE_GAME,
+      payload: {
+        newGame: game
+      }
+    });    
+  }
+}
+const joinGame = (game) => {
+  return async (dispatch) => {
+  await setDoc(doc(db, 'games', game.key), game)
+
+  dispatch({
+    type: ADD_GAME,
+    payload: {
+      newGame: game
+    }
+  });
   }
 }
 const addCurrentChatMessage = (message) => {
@@ -232,4 +283,4 @@ const addUser = (user) => {
   }
 }
 
-export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames }
+export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames, gettingGame, joinGame, updateGame, subToGames }

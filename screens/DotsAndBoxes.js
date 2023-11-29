@@ -8,7 +8,7 @@ import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 import { getAuthUser } from "../AuthManager.js";
-import { addGame } from "../data/Actions.js";
+import { addGame, updateGame } from "../data/Actions.js";
 import Small from "../components/Small.js";
 import Long from "../components/Long.js";
 import { dotsBlank } from "../data/DotsBlank.js";
@@ -143,12 +143,26 @@ function DotsAndBoxesScreen(props) {
             style={styles.gameButton}
             title={"Send Move"}
             onPress={() => {
-              if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
-              let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
-              dispatch(addGame(theGame))
-              props.navigation.navigate('Home')
+              // TODO --- This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
+              if (route.params.type === 'new') {
+                if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
+                let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
+                dispatch(addGame(theGame))
+                props.navigation.navigate('Home')
+                }}
+              else {
+                if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
+                  let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
+                  dispatch(updateGame(theGame))
+                  props.navigation.navigate('Home')
+                  }
+                else {
+                  let theGame = {...sendGame, p2:myMoves, turn:'p1', board: theLines, boxes: theBoxes}
+                  dispatch(updateGame(theGame))
+                  props.navigation.navigate('Home')                  
+                }
               }
-            }}
+              }}
           />
           {/* TODO --- Want to later add a Redo button so they don't have to close out and get back in to select a different line. This would require changing the board(lines) based on moves and then emptying out moves. Can probably map over moves and then setMoves to [].  */}
           
@@ -187,7 +201,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     // flexWrap:'wrap',
     // height:'10%',
-    flex: .1485,
+    flex: .1486,
     backgroundColor:'white',
     borderRadius: 4,
   },
@@ -195,7 +209,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     // flexWrap:'wrap',
     // height:'10%',
-    flex:.0476,
+    flex:.0477,
     backgroundColor:'white',
     borderRadius: 5,  
   },

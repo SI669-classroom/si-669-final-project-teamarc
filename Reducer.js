@@ -7,6 +7,7 @@ const DELETE_ITEM = 'DELETE_ITEM';
 const CHANGE_COLOR = 'CHANGE_COLOR';
 const SIGN_OUT = 'SIGN_OUT';
 const LOAD_GAMES = 'LOAD_GAMES';
+const UPDATE_GAME = 'UPDATE_GAME';
 
 const changeColor = (state, newColor) => {
   console.log('Changed it to:', newColor)
@@ -18,10 +19,20 @@ const changeColor = (state, newColor) => {
 const addGame = (state, newGame) => {
   let {myGames} = state;
   let newGames = myGames.concat(newGame)
+  console.log('in Reducer')
   return { 
     ...state, 
     myGames: newGames
   }
+}
+const updateGame = (state, game) => {
+  let { myGames } = state;
+
+  let newListItems = myGames.map(elem=>elem.key===game.key?game:elem);
+  return {
+    ...state, 
+    myGames: newListItems
+  };
 }
 const loadGames = (state, games) => {
   return {
@@ -90,6 +101,8 @@ function rootReducer(state=initialState, action) {
   switch (action.type) {
     case ADD_GAME:
       return addGame(state, action.payload.newGame)
+    case UPDATE_GAME:
+      return updateGame(state, action.payload.newGame)      
     case LOAD_GAMES:
       return loadGames(state, action.payload.newGames)
     case ADD_ITEM:
@@ -107,4 +120,4 @@ function rootReducer(state=initialState, action) {
   }
 }
 
-export { rootReducer, ADD_GAME, LOAD_GAMES, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, CHANGE_COLOR, SIGN_OUT };
+export { rootReducer, ADD_GAME, LOAD_GAMES, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, CHANGE_COLOR, SIGN_OUT, UPDATE_GAME };
