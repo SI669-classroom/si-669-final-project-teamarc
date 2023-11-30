@@ -79,23 +79,18 @@ function HomeScreen(props) {
             );
           }}
         />
-
+      <View style={styles.buttonContainer}>
       <FAB
-        title='Make Game'
+        title='New Game'
+        style={{margin:6}}
         color='green'
         onPress={() => {
           navigation.navigate('Games', {type: 'new'})
         }}
       />
       <FAB
-        title='Find Game'
-        color='orange'
-        onPress={() => {
-          navigation.navigate('Games', {type: 'find'})
-        }}
-      />
-      <FAB
         title='Sign Out'
+        style={{margin:6}}
         color='darkblue'
         onPress={async () => {
           try {
@@ -106,16 +101,16 @@ function HomeScreen(props) {
         }}
       />
       <FAB
-        title='Games Screen'
+        title='Settings'
+        style={{margin:6}}
         color='blue'
         onPress={() =>
           {
-          navigation.navigate('TicTacToe');
-          navigation.navigate('Home');
-          navigation.navigate('HangMan')
+          navigation.navigate('Settings');
           }
         }
       />
+      </View>
     </View>
   );
 }
@@ -127,6 +122,16 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: '#0085D1'
+  },
+  buttonContainer: {
+    // paddingTop:'12%',
+    flex: 1,
+    flexDirection:'row',
+    width: '100%',
+    padding:0,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     backgroundColor: '#0085D1'
   },
   listContainer: {

@@ -1,7 +1,7 @@
 
 
 import { initializeApp } from 'firebase/app';
-import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot, limit } from 'firebase/firestore';
+import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot, limit, getDoc } from 'firebase/firestore';
 
 import { firebaseConfig } from '../Secrets';
 import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT, ADD_GAME, LOAD_GAMES, UPDATE_GAME } from '../Reducer';
@@ -123,6 +123,16 @@ const loadGames = (myUser) => {
       }
     });
   }
+}
+const  loadUserIcon = async (key) => {
+  // console.log(key)
+  let m = await getDoc(doc(db, 'users', key))
+  console.log(m.data())
+  return m.data()
+}
+const updateUserIcon = (user) => {
+  console.log('action',user)
+  setDoc(doc(db,'users',user.key),user)
 }
 
 const addGame = (game) => {
@@ -306,4 +316,4 @@ const addUser = (user) => {
   }
 }
 
-export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames, gettingGame, joinGame, updateGame, subToGames }
+export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames, gettingGame, joinGame, updateGame, subToGames, loadUserIcon, updateUserIcon }
