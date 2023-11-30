@@ -7,8 +7,12 @@ import { Button } from "@rneui/base";
 import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
+import { getAuthUser } from "../AuthManager.js";
+import { addGame } from "../data/Actions.js";
 
-function GamesScreen(props) {
+function HangManScreen(props) {
+  const dispatch = useDispatch();
+  const myKey = getAuthUser().uid;
 
   return (
     <View style={styles.container}>
@@ -18,23 +22,11 @@ function GamesScreen(props) {
         <View style={styles.gameContainer}>
           <Image
             style={styles.image}
-            source={require('../images/TictactoeIcon.png')} />
-          <Text style={styles.gameText}>Tic-Tac-Toe</Text>
-        </View>
-
-        <View style={styles.gameContainer}>
-          <Image
-            style={styles.image}
-            source={require('../images/DotsBoxesIcon.png')} />
-          <Text style={styles.gameText}>Dots and Boxes</Text>
-        </View>
-
-        <View style={styles.gameContainer}>
-          <Image
-            style={styles.image}
             source={require('../images/HangManIcon.png')} />
           <Text style={styles.gameText}>Hang Man</Text>
         </View>
+
+
 
         <View style={styles.allButtons}>
           <Button
@@ -49,30 +41,17 @@ function GamesScreen(props) {
             }}
             containerStyle={{
               width: 200,
+              margin:10
             }}
             style={styles.gameButton}
-            title={"Find Game"}
+            title={"Send Move"}
             onPress={() => {
+              let theGame = {type:'HangMan', players:[myKey, 'free'], p1Moves:[1], p2Moves:[0], turn:'p2'}
+              dispatch(addGame(theGame))
+              props.navigation.navigate('Home')
             }}
           />
-          <Button
-            color="#FFD600"
-            buttonStyle={{
-              backgroundColor: "#FFD600",
-              borderRadius: 8,
-            }}
-            titleStyle={{
-              color: "black",
-              fontSize: 24,
-            }}
-            containerStyle={{
-              width: 200,
-            }}
-            style={styles.gameButton}
-            title={"Make A Game"}
-            onPress={() => {
-            }}
-          />
+          
         </View>
       </View>
     </View>
@@ -83,7 +62,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    paddingTop: '20%',
+    paddingTop: '12%',
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#0085D1'
@@ -127,4 +106,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GamesScreen;
+export default HangManScreen;

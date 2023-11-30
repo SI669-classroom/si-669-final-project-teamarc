@@ -1,33 +1,123 @@
-const ADD_CONTACT = 'ADD_CONTACT';
+
+// constants for action types
+const ADD_GAME = 'ADD_GAME';
+const ADD_ITEM = 'ADD_ITEM';
+const UPDATE_ITEM = 'UPDATE_ITEM';
+const DELETE_ITEM = 'DELETE_ITEM';
+const CHANGE_COLOR = 'CHANGE_COLOR';
+const SIGN_OUT = 'SIGN_OUT';
+const LOAD_GAMES = 'LOAD_GAMES';
+const UPDATE_GAME = 'UPDATE_GAME';
+
+const changeColor = (state, newColor) => {
+  console.log('Changed it to:', newColor)
+  return {
+    ...state, 
+    myColor: newColor
+  } 
+}
+const addGame = (state, newGame) => {
+  let {myGames} = state;
+  let newGames = myGames.concat(newGame)
+  console.log('in Reducer')
+  return { 
+    ...state, 
+    myGames: newGames
+  }
+}
+const updateGame = (state, game) => {
+  let { myGames } = state;
+
+  let newListItems = myGames.map(elem=>elem.key===game.key?game:elem);
+  return {
+    ...state, 
+    myGames: newListItems
+  };
+}
+const loadGames = (state, games) => {
+  return {
+    ...state, 
+    myGames: games
+  }
+
+}
+const signOut = (state, newuser) => {
+  console.log(newuser)
+  return {
+    ...state,
+    myUser: newuser
+  }
+}
+
+// CRUD operations that modify state
+const addItem = (state, newText) => {
+  let { listItems } = state;
+  let newListItems = listItems.concat({
+    text: newText,
+    key: Date.now() + Math.random()
+  });
+  return {
+    ...state, 
+    listItems: newListItems
+  };
+}
+
+const updateItem = (state, itemId, newText) => {
+  let { listItems } = state;
+  let newItem = {
+    text: newText,
+    key: itemId
+  };
+  let newListItems = listItems.map(elem=>elem.key===itemId?newItem:elem);
+  return {
+    ...state, 
+    listItems: newListItems
+  };
+}
+
+const deleteItem = (state, itemId) => {
+  let { listItems } = state;
+  let newListItems = listItems.filter(elem=>elem.key !== itemId);
+  return {
+    ...state, 
+    listItems: newListItems
+  }
+}
+
+// initialization--note that initialState is the default value of 'state' below 
+const initListItems = [
+  { text: 'Get costume', key: Date.now() },
+  { text: 'Get candy', key: Date.now() + 1}
+];
 
 const initialState = {
-    // groups: initGroups,
-    // listContacts: initContacts,
-  }
+  listItems: initListItems,
+  myColor: 'Red',
+  myGames: []
+}
 
-const addContact = (state, contact, contactKey) => {
-
-    let { listContacts } = state;
-    let newListContacts = listContacts.concat({
-      ...contact,
-      key: contactKey,
-    });
-    // console.log(newListItems)
-    return {
-      ...state,
-      listContacts: newListContacts
-  
-    };
+// The Reducer function! Here it is!
+function rootReducer(state=initialState, action) {
+  switch (action.type) {
+    case ADD_GAME:
+      return addGame(state, action.payload.newGame)
+    case UPDATE_GAME:
+      return updateGame(state, action.payload.newGame)      
+    case LOAD_GAMES:
+      return loadGames(state, action.payload.newGames)
+    case ADD_ITEM:
+      return addItem(state, action.payload.text);
+    case UPDATE_ITEM:
+      return updateItem(state, action.payload.key, action.payload.text);
+    case DELETE_ITEM:
+      return deleteItem(state, action.payload.key);
+    case CHANGE_COLOR:
+      return changeColor(state, action.payload.color);
+    case SIGN_OUT:
+      return signOut(state, action.payload.user);    
+    default:
+      return state;
   }
+}
 
-function rootReducer(state = initialState, action) {
-    switch (action.type) {
-      case ADD_CONTACT:
-        return addContact(state, action.payload.contact, action.payload.key);
-      default:
-        return state;
-    }
-  }
-  
-  export { rootReducer, ADD_CONTACT};
-  
+export { rootReducer, ADD_GAME, LOAD_GAMES, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, CHANGE_COLOR, SIGN_OUT, UPDATE_GAME };
