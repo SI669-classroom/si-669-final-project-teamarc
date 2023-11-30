@@ -18,7 +18,7 @@ function PlaysScreen(props) {
         <View style={styles.gameContainer}>
           <Image
             style={styles.image}
-            source={require('../images/TictactoeIcon.png')} />
+            source={require('../images/TicTacToeIcon.png')} />
           <Text style={styles.gameText}>Tic-Tac-Toe</Text>
         </View>
 
