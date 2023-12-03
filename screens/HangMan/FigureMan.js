@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    // margin: '5%',
     marginBottom: '12%',
   },
 })

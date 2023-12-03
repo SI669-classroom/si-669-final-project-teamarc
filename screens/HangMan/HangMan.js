@@ -77,7 +77,7 @@ console.log(wrongLetters.length)
                   else {
                     setWrongLetters([...wrongLetters, alphabet]);
                     wl = [...wrongLetters, alphabet]
-                    if (wl.length > 5) {
+                    if (wl.length > 6) {
                       // lost
                       setStatus('lost')
                     }
