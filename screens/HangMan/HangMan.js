@@ -10,7 +10,7 @@ import LogoImage from '../../components/LogoImage.js'
 import { getAuthUser } from "../../AuthManager.js";
 import { addGame } from "../../data/Actions.js";
 import FigureMan from './FigureMan.js'
-import Sentence from './Sentences.js'
+import { randomWord } from './Words.js'
 import { generate, count } from "random-words";
 
 
@@ -19,21 +19,10 @@ function HangManScreen(props) {
   const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
 
-  const allWords = [
-    'DOLPHIN', 'CAPYBARA', 'GIRAFFE', 'ALLIGATOR', 'CATIPILLER', 'KANGAROO', 'IGUANA', 'HAMSTER', 'ELEPHANT',
-    'TORTOISE', 'FLAMINGO', 'MONKEY', 'CHIPMUNK', 'PORCUPINE', 'JAGUAR', 'WOMBAT', 'MEERKAT', 'HEDGEHOG', 'SQUIRREL'
-  ]
-  console.log(maxWrong)
   const alphabets = ["A", "B", "C", "D", "E", "F", "G",
     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
     "S", "T", "U", "V", "W", "X", "Y", "Z"];
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // var generatedWord = generate({ maxLength: 6 })
-  console.log(allWords[currentIndex])
-  const word = allWords[currentIndex]
-
-
+  const [word, setWord] = useState(randomWord());
 
   const [correctGuesses, setCorrectGuesses] = useState([])
   const [wrongLetters, setWrongLetters] = useState('');
@@ -41,8 +30,11 @@ function HangManScreen(props) {
   const maskedWord = word.split('').map(letter =>
     correctGuesses.includes(letter) ? letter : "_").join(" ");
   const [status, setStatus] = useState('');
-  const [attempt, setAttempts] = useState(0);
+
   var maxWrong = 6;
+
+  console.log(word)
+  console.log(status)
 
   const handlePopupButton = () => {
     if (status === 'win') {
@@ -54,14 +46,28 @@ function HangManScreen(props) {
     setWrongLetters('')
     setStatus('')
     // // replay
-    // if (status === 'completed') {
-    //   setCurrentIndex(0);
-    // }
+    if (status === 'completed') {
+      setCurrentIndex(0);
+    }
   }
 
+  const updateStatus = (cl) => {
+    let status = 'win';
+    const correctWordArray = Array.from(word.toUpperCase());
+    console.log(correctWordArray)
+    correctWordArray.forEach(letter => {
+      if (!cl.includes(letter)) {
+        status = '';
+        return
+      }
+    })
+    // if (status === 'win' && currentIndex === WordsArray.length - 1) {
+    //   setStatus('completed')
+    //   return
+    // }
+    setStatus(status);
+  }
 
-
-  console.log(wrongLetters.length)
   return (
     <View style={styles.container}>
       <LogoImage />
@@ -89,12 +95,13 @@ function HangManScreen(props) {
           key={index} onPress={() => {
             if (word.includes(alphabet)) {
               setCorrectGuesses([...correctGuesses, alphabet])
+              const cl = correctGuesses + alphabet;
+              updateStatus(cl);
             }
             else {
               setWrongLetters([...wrongLetters, alphabet]);
               wl = [...wrongLetters, alphabet]
-              // console.log(wl.length)
-              if (wl.length > 6) {
+              if (wl.length > 4) {
                 // lost
                 setStatus('lost')
               }
@@ -113,10 +120,6 @@ function HangManScreen(props) {
           <Text></Text>
           </View> 
           )
-          
-
-
-
           }
         </View>
 
