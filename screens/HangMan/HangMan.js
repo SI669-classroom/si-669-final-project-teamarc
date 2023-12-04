@@ -11,7 +11,6 @@ import { getAuthUser } from "../../AuthManager.js";
 import { addGame } from "../../data/Actions.js";
 import FigureMan from './FigureMan.js'
 import { randomWord } from './Words.js'
-import { generate, count } from "random-words";
 
 
 
@@ -22,7 +21,7 @@ function HangManScreen(props) {
   const alphabets = ["A", "B", "C", "D", "E", "F", "G",
     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
     "S", "T", "U", "V", "W", "X", "Y", "Z"];
-  const [word, setWord] = useState(randomWord());
+  const [word] = useState(randomWord());
 
   const [correctGuesses, setCorrectGuesses] = useState([])
   const [wrongLetters, setWrongLetters] = useState('');
@@ -112,8 +111,8 @@ function HangManScreen(props) {
 
           (wrongLetters.length === maxWrong ?
           <View>
-            <Text>YOU LOSE </Text>
-            <Text>Correct Word is: {word}</Text>
+            <Text style={styles.wordText}>YOU LOSE </Text>
+            <Text style={styles.wordText}>Correct Word is: {word}</Text>
           </View> 
           :
           <View>
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0085D1'
   },
   header: {
-    paddingTop: '10%',
+    paddingTop: '3%',
   },
 
   keyContainer: {
@@ -186,9 +185,20 @@ const styles = StyleSheet.create({
   },
 
   displayWord: {
-    fontSize: 21,
+    fontSize: 28,
+    fontWeight: '700',
     alignSelf: 'center',
+    color: 'white',
+    marginTop: '5%',
   },
+
+  wordText: {
+    marginTop: '5%',
+    fontSize: 18,
+    alignSelf: 'center',
+    fontWeight: '700',
+    color: 'white',
+  }
 
 });
 

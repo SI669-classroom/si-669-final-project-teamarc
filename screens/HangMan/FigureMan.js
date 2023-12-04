@@ -28,7 +28,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    // margin: '5%',
-    marginBottom: '12%',
+    // marginBottom: '8%',
+  },
+  image: {
+    width: '75%',
+    resizeMode: 'contain',
   },
 })
