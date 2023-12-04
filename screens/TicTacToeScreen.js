@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { useState } from 'react';
+
 import {
   Dimensions, StyleSheet, View, Text, FlatList, Image,
   TouchableOpacity, TouchableHighlight
@@ -9,7 +11,6 @@ import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 import { getAuthUser } from "../AuthManager.js";
 import { addGame } from "../data/Actions.js";
-
 import Square from "../components/Square.js";
 
 
@@ -66,14 +67,12 @@ function Board({ xIsNext, squares, onPlay }) {
 }
 
 //main component of the screen containing the board
-
 function TicTacToeScreen(props) {
   useEffect(()=>{
     console.log('In TicTacToe');
 
     return(()=>{console.log('Left TicTacToe')})
   }, [])
-
 
   const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
@@ -96,7 +95,6 @@ function TicTacToeScreen(props) {
   }
 
 
-
   return (
     <View style={styles.container}>
       <LogoImage />
@@ -107,10 +105,43 @@ function TicTacToeScreen(props) {
             style={styles.image}
             source={require('../images/TicTacToeIcon.png')} />
           <Text style={styles.gameText}>Tic-Tac-Toe</Text>
+        </View> 
+
+        <View style={styles.game}>
+          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} /> 
+
+          {/* <ol>{moves}</ol> 
+          const moves = history.map((squares, move) => {
+            let description;
+            if (move > 0) {
+              description = 'Go to move #' + move;
+            } else {
+              description = 'Go to game start';
+            }
+            return (
+              <li key={move}>
+                <button onClick={() => jumpTo(move)}>{description}</button>
+              </li>
+            );
+          }); */}
+
+
+          {/* <FlatList
+            data={moves}
+            renderItem={({item}) => {
+              return (
+                <View>
+                  <Button>{item.type}</Button>
+                </View>
+              );
+            }}
+          /> */}
+
+          {/* game-info is the style */}
+
 
         </View>
-
-
+        
         <View style={styles.allButtons}>
           <Button
             color="#FFD600"
@@ -136,13 +167,11 @@ function TicTacToeScreen(props) {
           />
           
         </View>
-
-      </View>
-
+      </View> 
+       
     </View>
   );
 }
-
 
 
 function calculateWinner(squares) {
@@ -211,6 +240,7 @@ const styles = StyleSheet.create({
   gameButton: {
     marginBottom: 20,
   },
+
 
   //styles for the board itself
   square: {
