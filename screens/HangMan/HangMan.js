@@ -10,15 +10,30 @@ import LogoImage from '../../components/LogoImage.js'
 import { getAuthUser } from "../../AuthManager.js";
 import { addGame } from "../../data/Actions.js";
 import FigureMan from './FigureMan.js'
+import Sentence from './Sentences.js'
+import { generate, count } from "random-words";
+
+
 
 function HangManScreen(props) {
   const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
-  const word = 'HANGMAN';
+
+  const allWords = [
+    'DOLPHIN', 'CAPYBARA', 'GIRAFFE', 'ALLIGATOR', 'CATIPILLER', 'KANGAROO', 'IGUANA', 'HAMSTER', 'ELEPHANT',
+    'TORTOISE', 'FLAMINGO', 'MONKEY', 'CHIPMUNK', 'PORCUPINE', 'JAGUAR', 'WOMBAT', 'MEERKAT', 'HEDGEHOG', 'SQUIRREL'
+  ]
 
   const alphabets = ["A", "B", "C", "D", "E", "F", "G",
     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
     "S", "T", "U", "V", "W", "X", "Y", "Z"];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // var generatedWord = generate({ maxLength: 6 })
+  console.log(allWords[currentIndex])
+  const word = allWords[currentIndex]
+
+
 
   const [correctGuesses, setCorrectGuesses] = useState([])
   const [wrongLetters, setWrongLetters] = useState('');
@@ -26,6 +41,23 @@ function HangManScreen(props) {
   const maskedWord = word.split('').map(letter =>
     correctGuesses.includes(letter) ? letter : "_").join(" ");
   const [status, setStatus] = useState('');
+  const [attempt, setAttempts] = useState(0);
+  const { FigureMan, maxWrong } = props;
+
+  const handlePopupButton = () => {
+    if (status === 'win') {
+      // go to next word
+      setCurrentIndex(i => i + 1)
+    }
+    // clear all stored data
+    setCorrectLetters('')
+    setWrongLetters('')
+    setStatus('')
+    // // replay
+    // if (status === 'completed') {
+    //   setCurrentIndex(0);
+    // }
+  }
 
   const storeCorrectLetters = (keyInput) => {
     const ans = correctWord.toUpperCase();
@@ -44,12 +76,12 @@ function HangManScreen(props) {
     }
   }
 
-console.log(wrongLetters.length)
+  console.log(wrongLetters.length)
   return (
     <View style={styles.container}>
       <LogoImage />
       <ScrollView style={styles.header}>
-      <FigureMan wrongWord={wrongLetters.length} />
+        <FigureMan wrongWord={wrongLetters.length} />
         <Text style={styles.displayWord}>{maskedWord}</Text>
         <View style={styles.keyContainer}>
           {alphabets
@@ -83,9 +115,16 @@ console.log(wrongLetters.length)
                     }
                   }
                 }}>{alphabet}</Button>)}
+
+          {!maskedWord.includes("_") && <Text style={styles.displayWord}>You won!</Text>} :
+
+          (nWrong === maxWrong ?
+          <View>
+            <Text>YOU LOSE </Text>
+            <Text>Correct Word is: {word}</Text>
+          </View>
+          )
         </View>
-        {!maskedWord.includes("_") && <Text style={styles.displayWord}>You won!</Text>}
-        {/* </View> */}
 
         {/* <View style={styles.gameContainer}>
           <Image
