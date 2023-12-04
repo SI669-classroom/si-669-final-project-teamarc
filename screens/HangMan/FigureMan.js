@@ -17,12 +17,12 @@ function FigureMan(props) {
     const RightArm = <Image style={styles.image} source={require('../../images/RightArm.png')} />
     const LeftLeg = <Image style={styles.image} source={require('../../images/LeftLeg.png')} />
     const RightLeg = <Image style={styles.image} source={require('../../images/RightLeg.png')} />
-    // const bodyParts = [Rope,Head,Body, LeftArm, RightArm, LeftLeg, RightLeg]
+    const bodyParts = [Rope,Head,Body, LeftArm, RightArm, LeftLeg, RightLeg]
     
-    const figureWrong = () => {
-      maxWrong: 6,
-      bodyParts = [Rope, Head, Body, LeftArm, RightArm, LeftLeg, RightLeg]
-    }
+    // const figureWrong = () => {
+    //   // maxWrong: 6,
+    //   bodyParts = [Rope, Head, Body, LeftArm, RightArm, LeftLeg, RightLeg]
+    // }
 
   return (
     <View style={styles.container}>

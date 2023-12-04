@@ -23,7 +23,7 @@ function HangManScreen(props) {
     'DOLPHIN', 'CAPYBARA', 'GIRAFFE', 'ALLIGATOR', 'CATIPILLER', 'KANGAROO', 'IGUANA', 'HAMSTER', 'ELEPHANT',
     'TORTOISE', 'FLAMINGO', 'MONKEY', 'CHIPMUNK', 'PORCUPINE', 'JAGUAR', 'WOMBAT', 'MEERKAT', 'HEDGEHOG', 'SQUIRREL'
   ]
-
+  console.log(maxWrong)
   const alphabets = ["A", "B", "C", "D", "E", "F", "G",
     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
     "S", "T", "U", "V", "W", "X", "Y", "Z"];
@@ -42,7 +42,7 @@ function HangManScreen(props) {
     correctGuesses.includes(letter) ? letter : "_").join(" ");
   const [status, setStatus] = useState('');
   const [attempt, setAttempts] = useState(0);
-  const { FigureMan, maxWrong } = props;
+  var maxWrong = 6;
 
   const handlePopupButton = () => {
     if (status === 'win') {
@@ -59,22 +59,7 @@ function HangManScreen(props) {
     // }
   }
 
-  const storeCorrectLetters = (keyInput) => {
-    const ans = correctWord.toUpperCase();
-    if (ans.includes(keyInput)) {
-      const cl = correctLetters + keyInput;
-      setCorrectGuesses(cl);
-      // check win
-      updateStatus(cl);
-    } else {
-      const wl = wrongLetters + keyInput;
-      setWrongLetters(wl);
-      if (wl.length > 5) {
-        // lost
-        setStatus('lost')
-      }
-    }
-  }
+
 
   console.log(wrongLetters.length)
   return (
@@ -84,46 +69,55 @@ function HangManScreen(props) {
         <FigureMan wrongWord={wrongLetters.length} />
         <Text style={styles.displayWord}>{maskedWord}</Text>
         <View style={styles.keyContainer}>
-          {alphabets
-            .map((alphabet, index) =>
-              <Button
-                color="#FFD600"
-                buttonStyle={{
-                  borderRadius: 6,
-                  height: 45,
-                  width: 34,
-                }}
-                titleStyle={{
-                  color: "black",
-                  fontSize: 16,
-                }}
-                containerStyle={{
-                  // width: 35,
-                  marginBottom: 8,
-                  margin: 3,
-                }}
-                key={index} onPress={() => {
-                  if (word.includes(alphabet)) {
-                    setCorrectGuesses([...correctGuesses, alphabet])
-                  }
-                  else {
-                    setWrongLetters([...wrongLetters, alphabet]);
-                    wl = [...wrongLetters, alphabet]
-                    if (wl.length > 6) {
-                      // lost
-                      setStatus('lost')
-                    }
-                  }
-                }}>{alphabet}</Button>)}
+        {alphabets.map((alphabet, index) =>
+        <Button
+          color="#FFD600"
+          buttonStyle={{
+            borderRadius: 6,
+            height: 45,
+            width: 34,
+          }}
+          titleStyle={{
+            color: "black",
+            fontSize: 16,
+          }}
+          containerStyle={{
+            // width: 35,
+            marginBottom: 8,
+            margin: 3,
+          }}
+          key={index} onPress={() => {
+            if (word.includes(alphabet)) {
+              setCorrectGuesses([...correctGuesses, alphabet])
+            }
+            else {
+              setWrongLetters([...wrongLetters, alphabet]);
+              wl = [...wrongLetters, alphabet]
+              // console.log(wl.length)
+              if (wl.length > 6) {
+                // lost
+                setStatus('lost')
+              }
+            }
+          }}>{alphabet}</Button>)}
 
-          {!maskedWord.includes("_") && <Text style={styles.displayWord}>You won!</Text>} :
+          {!maskedWord.includes("_") ? <Text style={styles.displayWord}>You won!</Text> :
 
-          (nWrong === maxWrong ?
+          (wrongLetters.length === maxWrong ?
           <View>
             <Text>YOU LOSE </Text>
             <Text>Correct Word is: {word}</Text>
-          </View>
+          </View> 
+          :
+          <View>
+          <Text></Text>
+          </View> 
           )
+          
+
+
+
+          }
         </View>
 
         {/* <View style={styles.gameContainer}>
