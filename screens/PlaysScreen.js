@@ -35,9 +35,24 @@ function PlaysScreen(props) {
           }}
         /> */}
 {/* TODO --- Above is the way to phrase your  */}
-        <TouchableOpacity 
-         onPress={()=>{props.navigation.navigate('TicTacToe', {type:'new'})}}
-        >
+        {/* <TouchableOpacity 
+         onPress={()=>{props.navigation.navigate('TicTacToe', {type:'new'})}
+        }> - only adding new game and not checking whether there is existing games*/}
+
+        <TouchableOpacity
+          onPress={async()=>{
+            let nextGame = await gettingGame('TicTacToe',getAuthUser().uid)
+            if (nextGame === 0) {
+              props.navigation.navigate('TicTacToe', {type:'new'})
+            }
+            else {
+              // TODO --- Find a way to wait for reducer to update before navigating to the correct game. Can maybe navigate to home with a item property to say when get here go to this game?
+              joinGame(nextGame)
+              props.navigation.navigate('Home')
+            }
+          }}
+        > 
+
         <View style={styles.gameContainer}>
           <Image
             style={styles.image}

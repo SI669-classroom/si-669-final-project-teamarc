@@ -12,13 +12,14 @@ import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 import { getAuthUser } from "../AuthManager.js";
-import { addGame } from "../data/Actions.js";
+import { addGame, updateGame, joinGame } from "../data/Actions.js";
 import Square from "../components/Square.js";
 import { serverTimestamp } from "firebase/firestore";
 
 // Todo:
 // - Send board status to firebase after clicking "send move"
 // - Get and the most recent board status from firebase (whether it was updated by the other player or not)
+// - p1 and p2 might be different based on who is currently viewing, so use playerid to avoid duplicataion
 
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
@@ -53,7 +54,7 @@ function Board({ xIsNext, squares, onPlay }) {
       </View>
 
       <View style={styles.boardRowAfter}>
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} style={styles.square} />
+        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
         <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
       </View> 
@@ -75,11 +76,13 @@ function Board({ xIsNext, squares, onPlay }) {
 
 //main component of the screen, containing the board
 function TicTacToeScreen(props) {
-  useEffect(()=>{
-    // console.log('In TicTacToe');
 
-    // return(()=>{console.log('Left TicTacToe')})
-  }, [])
+  const {navigation, route} = props;
+  // useEffect(()=>{
+  //   // console.log('In TicTacToe');
+
+  //   // return(()=>{console.log('Left TicTacToe')})
+  // }, [])
 
   const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
@@ -89,10 +92,42 @@ function TicTacToeScreen(props) {
   const xIsNext = currentMove % 2 === 0; //indicator of which symbol is to be played next (x or o)
   const currentSquares = history[currentMove]; //get a list of the state of current squares
 
+  const [sendGame, setSendGame] = useState({
+    ttsboard : history, //what's sent to firebase is the same as the history
+    turn : 'p1',
+    players : ['me', 'free'],
+    finish: 'no',
+    type: 'TicTacToe'
+ });//game object for this instance
+
+  const theGames = useSelector((state) => state.myGames);
+
   useEffect(() => {
     // This will run every time `currentMove` or `history` changes
     console.log(`The most recent move:`, currentSquares);
   }, [currentMove, history]);
+
+  useEffect(()=>{
+    if (route.params.type === 'new') {
+      let current = {...sendGame, players:[getAuthUser().uid, 'free']};
+      setSendGame(current)
+      console.log('new game')
+    }
+   else {
+    // Existing Game Stuff
+    // console.log(route.params.type)
+    let thisGame = theGames.filter(elem=>elem.key === route.params.type);
+    // console.log('my filtered out game', thisGame);
+    setSendGame(thisGame[0]);
+
+    // if (getAuthUser().uid === thisGame[0].players[0] && thisGame[0].turn ==='p2'){
+    //   setCurrentMove(0)
+    // }
+    // if (getAuthUser().uid === thisGame[0].players[1] && thisGame[0].turn ==='p1'){
+    //   setCurrentMove(0)
+    // }
+   }
+  }, []);
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -158,11 +193,33 @@ function TicTacToeScreen(props) {
             style={styles.gameButton}
             title={"Send Move"}
             onPress={() => {
-              let theGame = {type:'TicTacToe', players:[myKey, 'free'], p1Moves:[1], p2Moves:[0], turn:'p2'}
-              dispatch(addGame(theGame))
-              props.navigation.navigate('Home')
+              // let theGame = {type:'TicTacToe', players:[myKey, 'free'], p1Moves:[1], p2Moves:[0], turn:'p2'}
+              // dispatch(addGame(theGame))
+              // props.navigation.navigate('Home')
 
-
+              if (route.params.type === 'new') {
+                // if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && currentMove === 0) {
+                let theGame = {...sendGame, turn:'p2', ttsboard: history[currentMove]}
+                dispatch(addGame(theGame))
+                console.log('new game') 
+                // console.log(history[currentMove])
+                console.log(sendGame)
+                props.navigation.navigate('Home')
+                // }
+              }
+                
+              else {
+                if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && currentMove === 0) {
+                  let theGame = {...sendGame, turn:'p2', ttsboard: history[currentMove]}
+                  dispatch(updateGame(theGame))
+                  props.navigation.navigate('Home')
+                  }
+                if (getAuthUser().uid === sendGame.players[1] && sendGame.turn ==='p2' && currentMove === 0) {
+                  let theGame = {...sendGame, turn:'p1', ttsboard: history[currentMove]}
+                  dispatch(updateGame(theGame))
+                  props.navigation.navigate('Home')                  
+                }
+              }
               
             }}
 
@@ -253,8 +310,8 @@ const styles = StyleSheet.create({
   status:{
     // marginBottom: '10',
     color: 'white', // This sets the text color to white
-    textAlign: 'center', // This will center your status text horizontally
-    marginBottom: 6, // This sets a bottom margin; you can adjust the value as needed
+    textAlign: 'center',  
+    marginBottom: 6, // This sets a bottom margin; can adjust the value as needed
   },
 
   game:{ //game contains the board and the list of moves

@@ -24,7 +24,8 @@ const subscribeToUserUpdates = () => {
         // console.log(uSnap.data());
         return uSnap.data(); // already has key?
       });
-      dispatch({
+      dispatch({ 
+        //update redux store with latest user info
         type: LOAD_USERS,
         payload: {
           users: updatedUsers

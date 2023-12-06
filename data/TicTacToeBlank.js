@@ -6,5 +6,5 @@ export const TicTacToeBlank = {
     p1 : [],
     p2 : [],
     finish: 'no',
-    type: 'DotsAndBoxes'
+    type: 'TicTacToe'
  }
