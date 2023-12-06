@@ -115,7 +115,6 @@ function TicTacToeScreen(props) {
     );
   };
 
-
   return (
     <View style={styles.container}>
       <LogoImage />
@@ -126,6 +125,7 @@ function TicTacToeScreen(props) {
             source={require('../images/TicTacToeIcon.png')} />
           <Text style={styles.gameText}>Tic-Tac-Toe</Text>
         </View> 
+
       </View> 
 
         <View style={styles.game}>
@@ -159,11 +159,11 @@ function TicTacToeScreen(props) {
               dispatch(addGame(theGame))
               props.navigation.navigate('Home')
             }}
+
           /> 
         </View> 
 
       </View> 
-
     </View>
   );
 }
@@ -236,6 +236,7 @@ const styles = StyleSheet.create({
   gameButton: {
     marginBottom: 40,
   },
+
 
   //styles for the board itself
   boardRowAfter: {
