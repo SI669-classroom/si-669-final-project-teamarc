@@ -15,7 +15,6 @@ import Square from "../components/Square.js";
 import { serverTimestamp } from "firebase/firestore";
 
 // Todo:
-// - Stop the game if there is no winner and all squares are filled
 // - Send status to firebase after each move
 // - Load status from firebase on start
 
@@ -44,10 +43,9 @@ function Board({ xIsNext, squares, onPlay }) {
   return (
     <View>
       <View style={styles.status}>
-        <Text>
+        <Text style={styles.status}>
         {status}
         </Text>
-        
       </View>
 
       <View style={styles.boardRowAfter}>
@@ -86,6 +84,8 @@ function TicTacToeScreen(props) {
   const [currentMove, setCurrentMove] = useState(0);//use this to set where this move is placed
   const xIsNext = currentMove % 2 === 0; //indicator of which is next (x or o)
   const currentSquares = history[currentMove]; //get a list of the state of current squares
+  const [status, setStatus] = useState('Next player: ' + (xIsNext ? 'X' : 'O'));
+
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -97,28 +97,14 @@ function TicTacToeScreen(props) {
     setCurrentMove(nextMove);
   }
 
-  // const moves = history.map((squares, move) => {
-  //   let description;
-  //   if (move > 0) {
-  //     description = 'Go to move #' + move;
-  //   } else {
-  //     description = 'Go to game start';
-  //   }
-  //   return (
-  //     <li key={move}>
-  //       <button onClick={() => jumpTo(move)}>{description}</button>
-  //     </li>
-  //   );
-  // }); 
-
   const moves = ({ item, index }) => {
     const move = index;
     const description = move ?
       `Go to move #${move}` :
       'Go to game start';
     return (
-      <View style={styles.listItem}>
-        <Text style={styles.listItemText} onPress={() => jumpTo(move)}>
+      <View style={styles.moveListItem}>
+        <Text style={styles.moveListItemText} onPress={() => jumpTo(move)}>
           {description}
         </Text>
       </View>
@@ -130,13 +116,13 @@ function TicTacToeScreen(props) {
     <View style={styles.container}>
       <LogoImage />
       <View style={styles.header}>
-
         <View style={styles.gameContainer}>
           <Image
             style={styles.image}
             source={require('../images/TicTacToeIcon.png')} />
           <Text style={styles.gameText}>Tic-Tac-Toe</Text>
         </View> 
+      </View> 
 
         <View style={styles.game}>
           <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} /> 
@@ -146,9 +132,7 @@ function TicTacToeScreen(props) {
             keyExtractor={(item, index) => index.toString()}
             style={styles.movesList}
           /> 
-          {/* game-info was the style for these buttons */} 
-        </View> 
-
+        
         <View style={styles.allButtons}>
           <Button
             color="#FFD600"
@@ -171,11 +155,11 @@ function TicTacToeScreen(props) {
               dispatch(addGame(theGame))
               props.navigation.navigate('Home')
             }}
-          />
-          
-        </View>
+          /> 
+        </View> 
+
       </View> 
-       
+
     </View>
   );
 }
@@ -211,7 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0085D1'
   },
   header: {
-    paddingTop: '10%',
+    paddingTop: '8%',
   },
 
   gameContainer: {
@@ -222,7 +206,7 @@ const styles = StyleSheet.create({
     height: 90,
     padding: 20,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
 
   image: {
@@ -241,11 +225,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column', 
     alignSelf: 'center', 
     width: '90%', 
-    marginTop: '5%',
+    marginTop: '2%',
+    justifyContent: 'flex-end', // Position button at the end of flex container
   },
 
   gameButton: {
-    marginBottom: 20,
+    marginBottom: 40,
   },
 
   //styles for the board itself
@@ -255,7 +240,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',       // align items in the center of the cross-axis
   },
   status:{
-    marginBottom: '10',
+    // marginBottom: '10',
+    color: 'white', // This sets the text color to white
+    textAlign: 'center', // This will center your status text horizontally
+    marginBottom: 6, // This sets a bottom margin; you can adjust the value as needed
   },
 
   game:{ //game contains the board and the list of moves
@@ -266,6 +254,13 @@ const styles = StyleSheet.create({
 
   movesList:{
     flex:1,
+    // flexGrow: 1,  // Allow the list grow and fill space 
+    marginTop: 10,
+  },
+
+  moveListItemText: {
+    color: 'white', // This sets the text color to white
+    textAlign: 'center', // This centers the button text horizontally
   },
 
   gameInfo:{
