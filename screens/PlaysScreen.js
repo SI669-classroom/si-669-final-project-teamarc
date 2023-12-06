@@ -49,9 +49,9 @@ function PlaysScreen(props) {
         <TouchableOpacity
         //  onPress={()=>{props.navigation.navigate('DotsAndBoxes', {type:'new'})}}
           onPress={async()=>{
-            console.log('starting grab')
+            // console.log('starting grab')
             let nextGame = await gettingGame('DotsAndBoxes',getAuthUser().uid)
-            console.log(nextGame)
+            // console.log(nextGame)
             if (nextGame === 0) {
               props.navigation.navigate('DotsAndBoxes', {type:'new'})
             }

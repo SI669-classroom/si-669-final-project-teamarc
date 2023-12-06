@@ -36,7 +36,7 @@ function DotsAndBoxesScreen(props) {
     }
    else {
     // Existing Game Stuff
-    console.log(route.params.type)
+    // console.log(route.params.type)
     let thisGame = theGames.filter(elem=>elem.key === route.params.type);
     // console.log('my filtered out game', thisGame);
     setSendGame(thisGame[0]);
@@ -50,20 +50,20 @@ function DotsAndBoxesScreen(props) {
     }
    }
 
-   return(()=>{console.log('detached')})
+  //  return(()=>{console.log('detached')})
   }, []);
 
   const tap = (num) => {
     // console.log(turns)
 
     if (turns === 0 ) {
-      console.log('No moves left')
+      // console.log('No moves left')
       return 
     }
 
     let next = [...myMoves];
     next.push(num)
-    console.log('next is: ',next)
+    // console.log('next is: ',next)
     setMyMoves(next)
     
     let grid = [...theLines]

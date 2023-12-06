@@ -15,6 +15,7 @@ function HomeScreen(props) {
   // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
+  const myId = getAuthUser().uid;
   const { navigation, route } = props;
   // const subscribeToMessageBoard = () => {
   //   const q = query(
@@ -36,7 +37,31 @@ function HomeScreen(props) {
   // useEffect(()=>{
   //   subscribeToMessageBoard();
   // }, []);
-
+  const turnBox = (n) => {
+    if (n===0) {
+      return (
+        <View style={[styles.turnBox, {backgroundColor:'green'}]}>
+          <Text>My Turn</Text>
+        </View>
+      )
+    }
+    return (
+      <View style={[styles.turnBox]}>
+        <Text>Their Turn</Text>
+      </View>
+    )
+  }
+  const checkTurn = (i) => {
+    if (myId === i.players[0] & i.turn === 'p1') {
+      return turnBox(0)
+    }
+    if (myId === i.players[1] & i.turn === 'p2') {
+      return turnBox(0)
+    }
+    else {
+      return turnBox(1)
+    }
+  }
 
   useEffect(() => {
     // console.log(getAuthUser().uid)
@@ -69,7 +94,7 @@ function HomeScreen(props) {
                 onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
               >
               <View key={item.key} style={styles.gameContainer}>
-              <Text>{item.type}</Text>
+              <Text>{checkTurn(item)}</Text>
               <Image
             style={styles.image}
             // {item.type ==='DotsAndBoxes' ? source='../images/DotsAndBoxesIcon.png':null}
@@ -163,6 +188,9 @@ const styles = StyleSheet.create({
     alignItems:'flex-end',
     alignSelf:'center'
   },
+  turnBox: {
+    backgroundColor: 'grey'
+  }
 
 });
 

@@ -4,31 +4,37 @@
 import { useState } from 'react';
 import { Button } from "@rneui/base";
 
-// function Square() {
-//     const [value, setValue] = useState(null);
-  
-//     function handleClick() {
-//       setValue('X');
-//     }
-  
-//     return (
-//       <button
-//         className="square"
-//         onClick={handleClick}>
-//         {value}
-//       </button>
-//     );
-
-// }
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 function Square({ value, onSquareClick }) {
   return (
-    <Button 
+    <TouchableOpacity
       onPress={onSquareClick}
-      title={value}
-      />
+      style={styles.button}
+    >
+      <Text style={styles.buttonText}>{value}</Text>
+    </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#999',
+    width: 100,   
+    height: 100, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: -1,  // Maintaining a tight layout with other squares if necessary
+  },
+  buttonText: {
+    color: 'black', // A contrasting color to the button background
+    fontSize: 24,
+    fontWeight: 'bold',
+  }
+});
 
 
 export default Square;
