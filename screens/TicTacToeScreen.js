@@ -81,11 +81,15 @@ function TicTacToeScreen(props) {
   const myKey = getAuthUser().uid;
 
   const [history, setHistory] = useState([Array(9).fill(null)]); //initialize the board with 9 empty grids
-  const [currentMove, setCurrentMove] = useState(0);//use this to set where this move is placed
-  const xIsNext = currentMove % 2 === 0; //indicator of which is next (x or o)
+  const [currentMove, setCurrentMove] = useState(0);//currentMove is the index of the current move (0-9)
+  const xIsNext = currentMove % 2 === 0; //indicator of which symbol is to be played next (x or o)
   const currentSquares = history[currentMove]; //get a list of the state of current squares
   const [status, setStatus] = useState('Next player: ' + (xIsNext ? 'X' : 'O'));
 
+  useEffect(() => {
+    // This will run every time `currentMove` or `history` changes
+    console.log(`The most recent move:`, currentSquares);
+  }, [currentMove, history]);
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
