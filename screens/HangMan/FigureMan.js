@@ -3,10 +3,6 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 
-// type HangmanDrawingProps = {
-//     wrongWord: number
-//   }
-
 function FigureMan(props) {
     const { wrongWord } = props;
     // console.log(wrongWord)
@@ -18,10 +14,9 @@ function FigureMan(props) {
     const LeftLeg = <Image style={styles.image} source={require('../../images/LeftLeg.png')} />
     const RightLeg = <Image style={styles.image} source={require('../../images/RightLeg.png')} />
     const bodyParts = [Rope,Head,Body, LeftArm, RightArm, LeftLeg, RightLeg]
-
+    
   return (
     <View style={styles.container}>
-      {/* {bodyParts.slice(0, wrongWord)} */}
       {bodyParts[wrongWord]}
     </View>
   )
@@ -33,7 +28,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    // margin: '5%',
-    marginBottom: '12%',
+    // marginBottom: '8%',
+  },
+  image: {
+    width: '75%',
+    resizeMode: 'contain',
   },
 })
