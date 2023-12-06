@@ -100,12 +100,13 @@ function HangManScreen(props) {
             else {
               setWrongLetters([...wrongLetters, alphabet]);
               wl = [...wrongLetters, alphabet]
-              if (wl.length > 4) {
+              if (wl.length > 5) {
                 // lost
                 setStatus('lost')
               }
             }
           }}>{alphabet}</Button>)}
+          
 
           {!maskedWord.includes("_") ? <Text style={styles.displayWord}>You won!</Text> :
 

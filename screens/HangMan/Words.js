@@ -1,4 +1,4 @@
-var ENGLISH_WORDS = [
+var ANIMAL_WORDS = [
   'Dolphin', 
   'Capybara', 
   'Giraffee', 
@@ -62,10 +62,10 @@ var ENGLISH_WORDS = [
   'Zonkey'
   ];
 
-  ENGLISH_WORDS = ENGLISH_WORDS.map(word => word.toUpperCase())
+  ANIMAL_WORDS = ANIMAL_WORDS.map(word => word.toUpperCase())
   
   function randomWord() {
-    return ENGLISH_WORDS[Math.floor(Math.random() * ENGLISH_WORDS.length)];
+    return ANIMAL_WORDS[Math.floor(Math.random() * ANIMAL_WORDS.length)];
   }
   
   export { randomWord };
