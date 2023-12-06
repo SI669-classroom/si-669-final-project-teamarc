@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 function FigureMan(props) {
     const { wrongWord } = props;
-    console.log(wrongWord)
+    // console.log(wrongWord)
     const Rope = <Image style={styles.image} source={require('../../images/Rope.png')} />
     const Head = <Image style={styles.image} source={require('../../images/Head.png')} />
     const Body = <Image style={styles.image} source={require('../../images/Body.png')} />

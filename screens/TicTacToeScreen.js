@@ -69,9 +69,9 @@ function Board({ xIsNext, squares, onPlay }) {
 //main component of the screen containing the board
 function TicTacToeScreen(props) {
   useEffect(()=>{
-    console.log('In TicTacToe');
+    // console.log('In TicTacToe');
 
-    return(()=>{console.log('Left TicTacToe')})
+    // return(()=>{console.log('Left TicTacToe')})
   }, [])
 
   const dispatch = useDispatch();
