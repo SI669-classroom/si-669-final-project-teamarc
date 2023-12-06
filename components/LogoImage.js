@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
    image: {
      width: '80%',
      height: 50,
+     resizeMode: 'contain'
    },
  });
 export default LogoImage;

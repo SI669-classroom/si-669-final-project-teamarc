@@ -6,7 +6,8 @@ import DetailsScreen from './screens/DetailsScreen';
 import PlaysScreen from './screens/PlaysScreen';
 import TicTacToeScreen from './screens/TicTacToeScreen';
 import DotsAndBoxesScreen from './screens/DotsAndBoxes';
-import HangManScreen from './screens/HangMan';
+import HangManScreen from './screens/HangMan/HangMan';
+import SettingsScreen from './screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ function AppContainer() {
       <Stack.Screen name='TicTacToe' component={TicTacToeScreen} />
       <Stack.Screen name='DotsAndBoxes' component={DotsAndBoxesScreen} />
       <Stack.Screen name='HangMan' component={HangManScreen} />
+      <Stack.Screen name='Settings' component={SettingsScreen} />
       <Stack.Screen name='Details' component={DetailsScreen} screenOptions={{title: 'Details'}}/>
 
       </Stack.Navigator>

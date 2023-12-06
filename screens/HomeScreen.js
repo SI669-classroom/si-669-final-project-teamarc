@@ -7,13 +7,15 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useEffect } from 'react';
 import LogoImage from '../components/LogoImage';
-import { loadGames } from '../data/Actions';
+import { loadGames, subToGames } from '../data/Actions';
 import { Text } from 'react-native';
 import { Image } from 'react-native';
+import { collection, query } from 'firebase/firestore';
 function HomeScreen(props) {
   // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
+  const myId = getAuthUser().uid;
   const { navigation, route } = props;
   // const subscribeToMessageBoard = () => {
   //   const q = query(
@@ -35,10 +37,36 @@ function HomeScreen(props) {
   // useEffect(()=>{
   //   subscribeToMessageBoard();
   // }, []);
+  const turnBox = (n) => {
+    if (n===0) {
+      return (
+        <View style={[styles.turnBox, {backgroundColor:'green'}]}>
+          <Text>My Turn</Text>
+        </View>
+      )
+    }
+    return (
+      <View style={[styles.turnBox]}>
+        <Text>Their Turn</Text>
+      </View>
+    )
+  }
+  const checkTurn = (i) => {
+    if (myId === i.players[0] & i.turn === 'p1') {
+      return turnBox(0)
+    }
+    if (myId === i.players[1] & i.turn === 'p2') {
+      return turnBox(0)
+    }
+    else {
+      return turnBox(1)
+    }
+  }
+
   useEffect(() => {
     // console.log(getAuthUser().uid)
     
-  dispatch(loadGames(getAuthUser().uid))
+    dispatch(subToGames());
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
      if (e.data.action.type === "GO_BACK"){
@@ -47,7 +75,7 @@ function HomeScreen(props) {
     //  console.log(e)
    })
 
-  }, []);
+  }, [myGames]);
   const myGames = useSelector((state)=>state.myGames)
   // console.log(myGames)
 
@@ -66,7 +94,7 @@ function HomeScreen(props) {
                 onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
               >
               <View key={item.key} style={styles.gameContainer}>
-              <Text>{item.type}</Text>
+              <Text>{checkTurn(item)}</Text>
               <Image
             style={styles.image}
             // {item.type ==='DotsAndBoxes' ? source='../images/DotsAndBoxesIcon.png':null}
@@ -76,23 +104,18 @@ function HomeScreen(props) {
             );
           }}
         />
-
+      <View style={styles.buttonContainer}>
       <FAB
-        title='Make Game'
+        title='New Game'
+        style={{margin:6}}
         color='green'
         onPress={() => {
           navigation.navigate('Games', {type: 'new'})
         }}
       />
       <FAB
-        title='Find Game'
-        color='orange'
-        onPress={() => {
-          navigation.navigate('Games', {type: 'find'})
-        }}
-      />
-      <FAB
         title='Sign Out'
+        style={{margin:6}}
         color='darkblue'
         onPress={async () => {
           try {
@@ -103,16 +126,16 @@ function HomeScreen(props) {
         }}
       />
       <FAB
-        title='Games Screen'
+        title='Settings'
+        style={{margin:6}}
         color='blue'
         onPress={() =>
           {
-          navigation.navigate('TicTacToe');
-          navigation.navigate('Home');
-          navigation.navigate('HangMan')
+          navigation.navigate('Settings');
           }
         }
       />
+      </View>
     </View>
   );
 }
@@ -124,6 +147,16 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: '#0085D1'
+  },
+  buttonContainer: {
+    // paddingTop:'12%',
+    flex: 1,
+    flexDirection:'row',
+    width: '100%',
+    padding:0,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     backgroundColor: '#0085D1'
   },
   listContainer: {
@@ -155,6 +188,9 @@ const styles = StyleSheet.create({
     alignItems:'flex-end',
     alignSelf:'center'
   },
+  turnBox: {
+    backgroundColor: 'grey'
+  }
 
 });
 

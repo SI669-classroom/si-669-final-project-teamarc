@@ -1,11 +1,11 @@
 
 
 import { initializeApp } from 'firebase/app';
-import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot } from 'firebase/firestore';
+import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot, limit, getDoc } from 'firebase/firestore';
 
 import { firebaseConfig } from '../Secrets';
-import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT, ADD_GAME, LOAD_GAMES } from '../Reducer';
-import { signIn, signOut } from '../AuthManager';
+import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT, ADD_GAME, LOAD_GAMES, UPDATE_GAME } from '../Reducer';
+import { getAuthUser, signIn, signOut } from '../AuthManager';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -13,14 +13,15 @@ const db = getFirestore(app);
 let usersSnapshotUnsub = undefined;
 let chatSnapshotUnsub = undefined;
 
+let snapshotUnsubscribe = undefined;
 const subscribeToUserUpdates = () => {
-  if (usersSnapshotUnsub) {
-    usersSnapshotUnsub();
+  if (snapshotUnsubscribe) {
+    snapshotUnsubscribe();
   }
   return (dispatch) => {
-    usersSnapshotUnsub =  onSnapshot(collection(db, 'users'), usersSnapshot => {
+    snapshotUnsubscribe = onSnapshot(collection(db, 'users'), usersSnapshot => {
       const updatedUsers = usersSnapshot.docs.map(uSnap => {
-        console.log(uSnap.data());
+        // console.log(uSnap.data());
         return uSnap.data(); // already has key?
       });
       dispatch({
@@ -32,7 +33,53 @@ const subscribeToUserUpdates = () => {
     });
   }
 }
+// This is mine
+const subToGames = () => {
+  if (snapshotUnsubscribe) {
+    snapshotUnsubscribe();
+  }
+  const q = query(collection(db,'games'),where('players','array-contains',`${getAuthUser().uid}`));
+  return (dispatch) => {
+  snapshotUnsubscribe = onSnapshot(q, gamesSnapshot => {
+    const updatedGames = gamesSnapshot.docs.map(gSnap => {
+      // console.log(gSnap.id);
+      return gSnap.data();
+    });
+    dispatch({
+      type: LOAD_GAMES,
+      payload: {
+        newGames: updatedGames
+      }
+    });
+  })
+}
+}
 
+
+
+
+
+
+
+
+// Called in PlaysScreen   Syr6l9enGBZt3uoRG1JokS6jwqO2
+const gettingGame = async (type, user) => {
+  // let q = query(collection(db,'games'),where('players','not-in',['Syr6l9enGBZt3uoRG1JokS6jwqO2','free']),where('players','array-contains','free'),where('type','==',`${type}`))
+  let q = query(collection(db,'games'),where('players','!=',[`${user}`,'free']),where('players','array-contains','free'),where('type','==',`${type}`));
+  let n = await getDocs(q,limit(1));
+  if (n.docs.length < 1 ) {
+    // No matches found
+    return 0
+  }
+  // ToDo --- Need to setDoc to contain current player so no one else can join
+  let m = n.docs[0]
+  // console.log(m.data())
+  let newPlayers = [...m.data().players];
+  newPlayers[1]=user;
+  nGame = {...m.data(), players:newPlayers, key:m.id}
+  // console.log(nGame)
+  return nGame
+}
 const unsubscribeFromUsers = () => {
   if (usersSnapshotUnsub) {
     usersSnapshotUnsub();
@@ -62,7 +109,7 @@ const loadGames = (myUser) => {
     let q = query(collection(db, 'games'), where('players', 'array-contains', `${myUser}`));
     
     let querySnapshot = await getDocs(q)
-    console.log((querySnapshot.docs).length)
+    // console.log((querySnapshot.docs).length)
     let newGamesList = querySnapshot.docs.map(docSnap => {
       return {
         ...docSnap.data(),
@@ -77,18 +124,55 @@ const loadGames = (myUser) => {
     });
   }
 }
+const  loadUserIcon = async (key) => {
+  // console.log(key)
+  let m = await getDoc(doc(db, 'users', key))
+  // console.log(m.data())
+  return m.data()
+}
+const updateUserIcon = (user) => {
+  // console.log('action',user)
+  setDoc(doc(db,'users',user.key),user)
+}
 
 const addGame = (game) => {
   return async (dispatch) => {
     const newGame = await addDoc(collection(db, 'games'), game);
     const gameKey = newGame.id
-    dispatch({
-      type: ADD_GAME,
-      payload: {
-        newGame: {...game, key:gameKey}
-      }
-    });
+    // dispatch({
+    //   type: ADD_GAME,
+    //   payload: {
+    //     newGame: {...game, key:gameKey}
+    //   }
+    // });
   }
+}
+const updateGame = (game) => {
+  return async (dispatch) => {
+    setDoc(doc(db, 'games', game.key), game)
+    dispatch({
+      type: UPDATE_GAME,
+      payload: {
+        newGame: game
+      }
+    });    
+  }
+}
+// const joinGame = (game) => {
+//   return async (dispatch) => {
+//   await setDoc(doc(db, 'games', game.key), game)
+
+//   // dispatch({
+//   //   type: ADD_GAME,
+//   //   payload: {
+//   //     newGame: game
+//   //   }
+//   // });
+//   // Think I don't need this because it is already being loaded.
+//   }
+// }
+const joinGame = (game) => {
+ setDoc(doc(db, 'games', game.key), game)
 }
 const addCurrentChatMessage = (message) => {
   return async (dispatch, getState) => {
@@ -232,4 +316,4 @@ const addUser = (user) => {
   }
 }
 
-export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames }
+export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames, gettingGame, joinGame, updateGame, subToGames, loadUserIcon, updateUserIcon }
