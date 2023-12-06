@@ -42,8 +42,9 @@ const subToGames = () => {
   return (dispatch) => {
   snapshotUnsubscribe = onSnapshot(q, gamesSnapshot => {
     const updatedGames = gamesSnapshot.docs.map(gSnap => {
-      // console.log(gSnap.id);
-      return gSnap.data();
+      let x = gSnap.data();
+      x.key = gSnap.id;
+      return x;
     });
     dispatch({
       type: LOAD_GAMES,

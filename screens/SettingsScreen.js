@@ -14,7 +14,7 @@ function SettingsScreen(props) {
   const [avOptions, setAvOptions] = useState('Loading')
   useEffect(()=>{
     loadUserIcon(getAuthUser().uid).then((e)=>{
-      // console.log('next',e)
+      console.log('next',e)
       setAvOptions({...e})
     })
     return(()=>{})
@@ -30,19 +30,22 @@ function SettingsScreen(props) {
         <View style={styles.gameContainer}>
           <Image
             style={styles.image}
-            // tintColor={avOptions?.[0]}
+            tintColor={avOptions?.avatar[0]}
             source={require('../images/Circle.png')} />
-            <Image
+
+          <Image
             style={styles.image}
-            // tintColor={avOptions?.[1]}
+            tintColor={avOptions?.avatar[1]}
             source={require('../images/Eyes.png')} />
-            <Image
+
+          <Image
             style={styles.image}
-            // tintColor={avOptions?.[2]}
+            tintColor={avOptions?.avatar[2]}
             source={require('../images/Pupils.png')} />
-            <Image
+
+          <Image
             style={styles.image}
-            // tintColor={avOptions?.[3]}
+            tintColor={avOptions?.avatar[3]}
             source={require('../images/Mouth2.png')} />
         </View>
 

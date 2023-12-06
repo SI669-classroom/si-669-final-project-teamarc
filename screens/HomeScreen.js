@@ -7,36 +7,19 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useEffect } from 'react';
 import LogoImage from '../components/LogoImage';
-import { loadGames, subToGames } from '../data/Actions';
+import { loadGames, loadUserIcon, subToGames } from '../data/Actions';
 import { Text } from 'react-native';
 import { Image } from 'react-native';
 import { collection, query } from 'firebase/firestore';
 function HomeScreen(props) {
   // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
+  const [av, setAv] = useState({})
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
   const myId = getAuthUser().uid;
   const { navigation, route } = props;
-  // const subscribeToMessageBoard = () => {
-  //   const q = query(
-  //     collection(db, 'messageBoard'),
-  //     orderBy('timestamp', 'desc'),
-  //     limit(3)
-  //   );
-  //   onSnapshot(q, mbSnapshot => {
-  //     const newMessages = [];
-  //     mbSnapshot.forEach(mSnap => {
-  //       let newMessage = mSnap.data();
-  //       newMessage.key = mSnap.id;
-  //       newMessages.push(newMessage);
-  //     });
-  //     setMessages(newMessages);
-  //   }
-  // )};
 
-  // useEffect(()=>{
-  //   subscribeToMessageBoard();
-  // }, []);
+
   const turnBox = (n) => {
     if (n===0) {
       return (
@@ -65,13 +48,18 @@ function HomeScreen(props) {
 
   useEffect(() => {
     // console.log(getAuthUser().uid)
-    
+    // loadUserIcon()
     dispatch(subToGames());
+    loadUserIcon(getAuthUser().uid).then((e)=>{
+      console.log('next',e)
+      setAv({...e})
+    })
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
      if (e.data.action.type === "GO_BACK"){
      e.preventDefault();
      }
+     console.log(getAuthUser())
     //  console.log(e)
    })
 
@@ -94,7 +82,10 @@ function HomeScreen(props) {
                 onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
               >
               <View key={item.key} style={styles.gameContainer}>
-              <Text>{checkTurn(item)}</Text>
+              <View>
+                <Text>{checkTurn(item)}</Text>
+                <Text>Game: {item?.key.slice(-4)}</Text>
+              </View>
               <Image
             style={styles.image}
             // {item.type ==='DotsAndBoxes' ? source='../images/DotsAndBoxesIcon.png':null}
@@ -151,7 +142,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     // paddingTop:'12%',
-    flex: 1,
+    // flex: 1,
     flexDirection:'row',
     width: '100%',
     padding:0,
