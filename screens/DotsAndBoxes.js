@@ -24,14 +24,11 @@ function DotsAndBoxesScreen(props) {
   const theGames = useSelector((state) => state.myGames);
   // console.log(dotsBlank)
   useEffect(()=>{
-    if (route.params.type === 'free') {
-      // TODO --- Free Game Stuff
 
-    }
     if (route.params.type === 'new') {
       let current = {...sendGame, players:[getAuthUser().uid, 'free']};
       setSendGame(current)
-      // TODO --- New Game Stuff
+      //  New Game Stuff
 
     }
    else {
@@ -64,6 +61,7 @@ function DotsAndBoxesScreen(props) {
     let next = [...myMoves];
     next.push(num)
     // console.log('next is: ',next)
+    // TODO --- Check for boxes that have been filled if filled, turn = 1 
     setMyMoves(next)
     
     let grid = [...theLines]
@@ -144,7 +142,7 @@ function DotsAndBoxesScreen(props) {
             style={styles.gameButton}
             title={"Send Move"}
             onPress={() => {
-              // TODO --- This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
+              //  This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
               if (route.params.type === 'new') {
                 if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
                 let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
