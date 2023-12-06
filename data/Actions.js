@@ -1,4 +1,4 @@
-
+//Actions.js
 
 import { initializeApp } from 'firebase/app';
 import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot, limit, getDoc } from 'firebase/firestore';
@@ -156,7 +156,10 @@ const updateGame = (game) => {
         newGame: game
       }
     });    
+
   }
+
+
 }
 // const joinGame = (game) => {
 //   return async (dispatch) => {

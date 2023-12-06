@@ -1,3 +1,5 @@
+//HomeScreen.js
+
 import { useState } from 'react';
 import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
 import { FAB } from "@rneui/base";
@@ -17,6 +19,8 @@ function HomeScreen(props) {
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
   const myId = getAuthUser().uid;
   const { navigation, route } = props;
+
+
   // const subscribeToMessageBoard = () => {
   //   const q = query(
   //     collection(db, 'messageBoard'),
@@ -37,6 +41,9 @@ function HomeScreen(props) {
   // useEffect(()=>{
   //   subscribeToMessageBoard();
   // }, []);
+
+
+
   const turnBox = (n) => {
     if (n===0) {
       return (

@@ -1,3 +1,5 @@
+// TicTacToeScreen.js
+
 import { useEffect } from "react";
 import { useState } from 'react';
 
@@ -15,13 +17,14 @@ import Square from "../components/Square.js";
 import { serverTimestamp } from "firebase/firestore";
 
 // Todo:
-// - Send status to firebase after each move
-// - Load status from firebase on start
+// - Send board status to firebase after clicking "send move"
+// - Get and the most recent board status from firebase (whether it was updated by the other player or not)
 
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
+    // If there is a winner or the square is already filled, handleClick is disabled and no square can be clicked
     if (calculateWinner(squares) || squares[i]) {
-      return;
+      return; 
     }
     const nextSquares = squares.slice();
     if (xIsNext) {
@@ -36,6 +39,7 @@ function Board({ xIsNext, squares, onPlay }) {
   let status;
   if (winner) {
     status = 'Winner: ' + winner;
+
   } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
@@ -69,7 +73,7 @@ function Board({ xIsNext, squares, onPlay }) {
   );
 }
 
-//main component of the screen containing the board
+//main component of the screen, containing the board
 function TicTacToeScreen(props) {
   useEffect(()=>{
     console.log('In TicTacToe');
@@ -84,7 +88,6 @@ function TicTacToeScreen(props) {
   const [currentMove, setCurrentMove] = useState(0);//currentMove is the index of the current move (0-9)
   const xIsNext = currentMove % 2 === 0; //indicator of which symbol is to be played next (x or o)
   const currentSquares = history[currentMove]; //get a list of the state of current squares
-  const [status, setStatus] = useState('Next player: ' + (xIsNext ? 'X' : 'O'));
 
   useEffect(() => {
     // This will run every time `currentMove` or `history` changes
@@ -114,7 +117,6 @@ function TicTacToeScreen(props) {
       </View>
     );
   };
-
 
   return (
     <View style={styles.container}>
@@ -158,6 +160,9 @@ function TicTacToeScreen(props) {
               let theGame = {type:'TicTacToe', players:[myKey, 'free'], p1Moves:[1], p2Moves:[0], turn:'p2'}
               dispatch(addGame(theGame))
               props.navigation.navigate('Home')
+
+
+              
             }}
           /> 
         </View> 
@@ -258,7 +263,6 @@ const styles = StyleSheet.create({
 
   movesList:{
     flex:1,
-    // flexGrow: 1,  // Allow the list grow and fill space 
     marginTop: 10,
   },
 
