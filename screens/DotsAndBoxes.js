@@ -8,10 +8,11 @@ import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 import { getAuthUser } from "../AuthManager.js";
-import { addGame, updateGame } from "../data/Actions.js";
+import { addGame, loadUserIcon, updateGame } from "../data/Actions.js";
 import Small from "../components/Small.js";
 import Long from "../components/Long.js";
 import { dotsBlank } from "../data/DotsBlank.js";
+import UserIcon from "../components/UserIcon.js";
 
 function DotsAndBoxesScreen(props) {
   const { navigation, route } = props;
@@ -20,28 +21,53 @@ function DotsAndBoxesScreen(props) {
   const [turns, setTurns] = useState(1);
   const [myMoves, setMyMoves] = useState([]);
   const [sendGame, setSendGame] = useState(dotsBlank)
+  const [avs, setAvs] = useState([[0,0,0,0],[0,0,0,0]])
   // Need a way to check game logic for player turn
   const theGames = useSelector((state) => state.myGames);
   // console.log(dotsBlank)
-  useEffect(()=>{
-    if (route.params.type === 'free') {
-      // TODO --- Free Game Stuff
-
+  const getIcon = (x) => {
+    let q = [0,1]
+    // console.log(x)
+    // console.log(x?.length)
+    if (x[1]==='free'){
+  
+      loadUserIcon(x[0]).then((e)=>{
+        // console.log('next',e)
+        q = [[...e.avatar],['black','black','black','black']]
+        // setAvs([[...e.avatar],['black','black','black','black']])
+        // return e.avatar
+        // console.log(q)
+        setAvs(q)
+      })}
+      else {
+        loadUserIcon(x[0]).then((e)=>{
+          q[0]=[...e.avatar]
+        }).then(
+        loadUserIcon(x[1]).then((e)=>{
+          
+          q[1]=[...e.avatar]
+          setAvs(q)
+        }))
+      }
     }
+  useEffect(()=>{
+
     if (route.params.type === 'new') {
       let current = {...sendGame, players:[getAuthUser().uid, 'free']};
       setSendGame(current)
-      // TODO --- New Game Stuff
+      //  New Game Stuff
+      getIcon(current.players)
 
     }
    else {
     // Existing Game Stuff
-    console.log(route.params.type)
+    // console.log(route.params.type)
     let thisGame = theGames.filter(elem=>elem.key === route.params.type);
     // console.log('my filtered out game', thisGame);
     setSendGame(thisGame[0]);
     setTheLines(thisGame[0].board);
     setBoxes(thisGame[0].boxes);
+    getIcon(thisGame[0].players);
     if (getAuthUser().uid === thisGame[0].players[0] && thisGame[0].turn ==='p2'){
       setTurns(0)
     }
@@ -50,20 +76,23 @@ function DotsAndBoxesScreen(props) {
     }
    }
 
-   return(()=>{console.log('detached')})
+  //  return(()=>{console.log('detached')})
   }, []);
+
+  // const icons = getIcon(sendGame.players)
 
   const tap = (num) => {
     // console.log(turns)
 
     if (turns === 0 ) {
-      console.log('No moves left')
+      // console.log('No moves left')
       return 
     }
 
     let next = [...myMoves];
     next.push(num)
-    console.log('next is: ',next)
+    // console.log('next is: ',next)
+    // TODO --- Check for boxes that have been filled if filled, turn = 1 
     setMyMoves(next)
     
     let grid = [...theLines]
@@ -82,10 +111,10 @@ function DotsAndBoxesScreen(props) {
       <View style={styles.header}>
 
         <View style={styles.scoreContainer}>
-          <Image
-            style={styles.image}
-            source={require('../images/DotsAndBoxesIcon.png')} />
-          <Text style={styles.gameText}>Dots and Boxes</Text>
+          <UserIcon avatar={avs[0]} b={'blue'} />
+          <UserIcon avatar={avs[1]} b={'#C00'}/>
+          
+          <Text style={styles.gameText}>HI</Text>
         </View>
         {/* THINGS ARE LONG OR SMALL WIDTH                  SMALL WIDTH       OR        LONG WIDTH */}
       <View style={styles.container2}>
@@ -144,7 +173,7 @@ function DotsAndBoxesScreen(props) {
             style={styles.gameButton}
             title={"Send Move"}
             onPress={() => {
-              // TODO --- This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
+              //  This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
               if (route.params.type === 'new') {
                 if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
                 let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
@@ -164,7 +193,7 @@ function DotsAndBoxesScreen(props) {
                 }
               }
               }}
-          />
+          ></Button>
           {/* TODO --- Want to later add a Redo button so they don't have to close out and get back in to select a different line. This would require changing the board(lines) based on moves and then emptying out moves. Can probably map over moves and then setMoves to [].  */}
           
         </View>

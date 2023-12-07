@@ -32,6 +32,7 @@ function SettingsScreen(props) {
     loadUserIcon(getAuthUser().uid).then((e) => {
       // console.log('In the Settings',e)
       setAvOptions({ ...e })
+
     })
     return (() => { })
   }, [])
@@ -48,6 +49,7 @@ function SettingsScreen(props) {
     let newAv = { ...avOptions };
     let newColors = [...avOptions.avatar]
     newColors[x] = color
+
     newAv.avatar = newColors
     setAvOptions(newAv)
   }
@@ -158,6 +160,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#0085D1'
   },
+
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -175,6 +178,7 @@ const styles = StyleSheet.create({
     borderRadius: '10%',
     
   },
+
 
   header: {
     paddingTop: '10%',

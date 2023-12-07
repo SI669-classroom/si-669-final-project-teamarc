@@ -21,7 +21,7 @@ const subscribeToUserUpdates = () => {
   return (dispatch) => {
     snapshotUnsubscribe = onSnapshot(collection(db, 'users'), usersSnapshot => {
       const updatedUsers = usersSnapshot.docs.map(uSnap => {
-        console.log(uSnap.data());
+        // console.log(uSnap.data());
         return uSnap.data(); // already has key?
       });
       dispatch({
@@ -42,8 +42,9 @@ const subToGames = () => {
   return (dispatch) => {
   snapshotUnsubscribe = onSnapshot(q, gamesSnapshot => {
     const updatedGames = gamesSnapshot.docs.map(gSnap => {
-      console.log(gSnap.id);
-      return gSnap.data();
+      let x = gSnap.data();
+      x.key = gSnap.id;
+      return x;
     });
     dispatch({
       type: LOAD_GAMES,
@@ -109,7 +110,7 @@ const loadGames = (myUser) => {
     let q = query(collection(db, 'games'), where('players', 'array-contains', `${myUser}`));
     
     let querySnapshot = await getDocs(q)
-    console.log((querySnapshot.docs).length)
+    // console.log((querySnapshot.docs).length)
     let newGamesList = querySnapshot.docs.map(docSnap => {
       return {
         ...docSnap.data(),
@@ -127,11 +128,11 @@ const loadGames = (myUser) => {
 const  loadUserIcon = async (key) => {
   // console.log(key)
   let m = await getDoc(doc(db, 'users', key))
-  console.log(m.data())
+  // console.log(m.data())
   return m.data()
 }
 const updateUserIcon = (user) => {
-  console.log('action',user)
+  // console.log('action',user)
   setDoc(doc(db,'users',user.key),user)
 }
 
