@@ -11,10 +11,11 @@ import { loadGames, loadUserIcon, subToGames } from '../data/Actions';
 import { Text } from 'react-native';
 import { Image } from 'react-native';
 import { collection, query } from 'firebase/firestore';
+import UserIcon from '../components/UserIcon';
 function HomeScreen(props) {
   // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
-  const [av, setAv] = useState({})
+  const [av, setAv] = useState([0,0,0,0])
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
   const myId = getAuthUser().uid;
   const { navigation, route } = props;
@@ -47,29 +48,30 @@ function HomeScreen(props) {
   }
 
   useEffect(() => {
-    // console.log(getAuthUser().uid)
-    // loadUserIcon()
     dispatch(subToGames());
     loadUserIcon(getAuthUser().uid).then((e)=>{
-      console.log('next',e)
-      setAv({...e})
+      // console.log('next',e)
+      setAv([...e.avatar])
     })
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
      if (e.data.action.type === "GO_BACK"){
      e.preventDefault();
      }
-     console.log(getAuthUser())
+    //  console.log(getAuthUser())
     //  console.log(e)
    })
 
-  }, [myGames]);
+  }, [myGames,route]);
   const myGames = useSelector((state)=>state.myGames)
   // console.log(myGames)
 
   return(
-    <View style={styles.container}>
-            <LogoImage />
+      <View style={styles.container}>
+        <View style={styles.header}>
+        <UserIcon avatar={av} b='black' />   
+        <LogoImage />
+        </View>
       <View style={styles.listContainer}>
       </View>
       <Text>Active Games</Text>
@@ -148,6 +150,16 @@ const styles = StyleSheet.create({
     padding:0,
     justifyContent: 'center',
     alignItems: 'flex-end',
+    backgroundColor: '#0085D1'
+  },
+  header: {
+    // paddingTop:'12%',
+    // flex: 1,
+    flexDirection:'row',
+    width: '100%',
+    padding:0,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#0085D1'
   },
   listContainer: {

@@ -9,16 +9,35 @@ import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 import { getAuthUser } from "../AuthManager.js";
 import { addGame, loadUserIcon, updateUserIcon } from "../data/Actions.js";
+import UserIcon from "../components/UserIcon.js";
+import { FAB } from "@rneui/base";
 
 function SettingsScreen(props) {
   const [avOptions, setAvOptions] = useState('Loading')
+  const [select, setSelect] = useState('')
   useEffect(()=>{
     loadUserIcon(getAuthUser().uid).then((e)=>{
-      console.log('next',e)
+      // console.log('In the Settings',e)
       setAvOptions({...e})
     })
     return(()=>{})
   }, [])
+
+  const icons = () => {
+    if (avOptions === 'Loading') { 
+      return (<Text>Loading the Object in.</Text>)
+    }
+    return (
+      <UserIcon avatar={avOptions.avatar}/>      
+    )
+  }
+  const changeColor = (x, color) => {
+    let newAv = {...avOptions};
+    let newColors = [...avOptions.avatar]
+    newColors[x]= color
+    newAv.avatar = newColors
+    setAvOptions(newAv)
+  }
 
   const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
@@ -26,30 +45,40 @@ function SettingsScreen(props) {
     <View style={styles.container}>
       <LogoImage />
       <View style={styles.header}>
+      {icons()}
+      <View style={styles.row}>
+        <FAB 
+        color='black' title='Face' style={{margin:6}}
+        onPress={() => {
+          setSelect(0)}}/>
+        <FAB 
+        color='black' title='Eyes' style={{margin:6}}
+        onPress={() => {
+          setSelect(1)}}/>
+        <FAB 
+        color='black' title='Pupils' style={{margin:6}}
+        onPress={() => {
+          setSelect(2)}}/>
+        <FAB 
+        color='black' title='Mouth' style={{margin:6}}
+        onPress={() => {
+          setSelect(3)}}/>
+      </View>
 
-        <View style={styles.gameContainer}>
-          <Image
-            style={styles.image}
-            tintColor={avOptions?.avatar[0]}
-            source={require('../images/Circle.png')} />
+      <View style={styles.row}>
+      <FAB color="red" style={{margin:6}} onPress={() => {changeColor(select,'red')}}/>
+      <FAB color="blue" style={{margin:6}} onPress={() => {changeColor(select,'blue')}}/>
+      <FAB color="green" style={{margin:6}} onPress={() => {changeColor(select,'green')}}/>
+      <FAB color="yellow" style={{margin:6}} onPress={() => {changeColor(select,'yellow')}}/>
+      <FAB color="magenta" style={{margin:6}} onPress={() => {changeColor(select,'magenta')}}/>
+      <FAB color="#555" style={{margin:6}} onPress={() => {changeColor(select,'#555')}}/>
+      <FAB color="#73F" style={{margin:6}} onPress={() => {changeColor(select,'#73F')}}/>
+      <FAB color="black" style={{margin:6}} onPress={() => {changeColor(select,'black')}}/>
+      <FAB color="white" style={{margin:6}} onPress={() => {changeColor(select,'white')}}/>
+      <FAB color="gray" style={{margin:6}} onPress={() => {changeColor(select,'gray')}}/>
+      <FAB color="#492000" style={{margin:6}} onPress={() => {changeColor(select,'#492000')}}/>
+      </View>
 
-          <Image
-            style={styles.image}
-            tintColor={avOptions?.avatar[1]}
-            source={require('../images/Eyes.png')} />
-
-          <Image
-            style={styles.image}
-            tintColor={avOptions?.avatar[2]}
-            source={require('../images/Pupils.png')} />
-
-          <Image
-            style={styles.image}
-            tintColor={avOptions?.avatar[3]}
-            source={require('../images/Mouth2.png')} />
-        </View>
-
-        <Text>{JSON.stringify(avOptions)}</Text>
 
         <View style={styles.allButtons}>
           <Button
@@ -70,7 +99,7 @@ function SettingsScreen(props) {
             title={"Update Profile"}
             onPress={() => {
               updateUserIcon(avOptions)
-              props.navigation.navigate('Home')
+              props.navigation.push('Home')
             }}
           />
           
@@ -89,11 +118,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#0085D1'
   },
+  row:{
+    flexDirection:'row',
+    flexWrap:'wrap'
+
+  },
   header: {
     paddingTop: '10%',
   },
 
   gameContainer: {
+    // flex:1,
     backgroundColor: 'blue',
     // width: 350,
     // flexDirection: 'row',
