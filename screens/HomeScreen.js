@@ -7,56 +7,71 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useEffect } from 'react';
 import LogoImage from '../components/LogoImage';
-import { loadGames, subToGames } from '../data/Actions';
+import { loadGames, loadUserIcon, subToGames } from '../data/Actions';
 import { Text } from 'react-native';
 import { Image } from 'react-native';
 import { collection, query } from 'firebase/firestore';
+import UserIcon from '../components/UserIcon';
 function HomeScreen(props) {
   // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
+  const [av, setAv] = useState([0,0,0,0])
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
+  const myId = getAuthUser().uid;
   const { navigation, route } = props;
-  // const subscribeToMessageBoard = () => {
-  //   const q = query(
-  //     collection(db, 'messageBoard'),
-  //     orderBy('timestamp', 'desc'),
-  //     limit(3)
-  //   );
-  //   onSnapshot(q, mbSnapshot => {
-  //     const newMessages = [];
-  //     mbSnapshot.forEach(mSnap => {
-  //       let newMessage = mSnap.data();
-  //       newMessage.key = mSnap.id;
-  //       newMessages.push(newMessage);
-  //     });
-  //     setMessages(newMessages);
-  //   }
-  // )};
 
-  // useEffect(()=>{
-  //   subscribeToMessageBoard();
-  // }, []);
 
+  const turnBox = (n) => {
+    if (n===0) {
+      return (
+        <View style={[styles.turnBox, {backgroundColor:'green'}]}>
+          <Text>My Turn</Text>
+        </View>
+      )
+    }
+    return (
+      <View style={[styles.turnBox]}>
+        <Text>Their Turn</Text>
+      </View>
+    )
+  }
+  const checkTurn = (i) => {
+    if (myId === i.players[0] & i.turn === 'p1') {
+      return turnBox(0)
+    }
+    if (myId === i.players[1] & i.turn === 'p2') {
+      return turnBox(0)
+    }
+    else {
+      return turnBox(1)
+    }
+  }
 
   useEffect(() => {
-    // console.log(getAuthUser().uid)
-    
     dispatch(subToGames());
+    loadUserIcon(getAuthUser().uid).then((e)=>{
+      // console.log('next',e)
+      setAv([...e.avatar])
+    })
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
      if (e.data.action.type === "GO_BACK"){
      e.preventDefault();
      }
+    //  console.log(getAuthUser())
     //  console.log(e)
    })
 
-  }, [myGames]);
+  }, [myGames,route]);
   const myGames = useSelector((state)=>state.myGames)
   // console.log(myGames)
 
   return(
-    <View style={styles.container}>
-            <LogoImage />
+      <View style={styles.container}>
+        <View style={styles.header}>
+        <UserIcon avatar={av} b='black' />   
+        <LogoImage />
+        </View>
       <View style={styles.listContainer}>
       </View>
       <Text>Active Games</Text>
@@ -69,7 +84,10 @@ function HomeScreen(props) {
                 onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
               >
               <View key={item.key} style={styles.gameContainer}>
-              <Text>{item.type}</Text>
+              <View>
+                <Text>{checkTurn(item)}</Text>
+                <Text>Game: {item?.key.slice(-4)}</Text>
+              </View>
               <Image
             style={styles.image}
             // {item.type ==='DotsAndBoxes' ? source='../images/DotsAndBoxesIcon.png':null}
@@ -126,12 +144,22 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     // paddingTop:'12%',
-    flex: 1,
+    // flex: 1,
     flexDirection:'row',
     width: '100%',
     padding:0,
     justifyContent: 'center',
     alignItems: 'flex-end',
+    backgroundColor: '#0085D1'
+  },
+  header: {
+    // paddingTop:'12%',
+    // flex: 1,
+    flexDirection:'row',
+    width: '100%',
+    padding:0,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#0085D1'
   },
   listContainer: {
@@ -163,6 +191,9 @@ const styles = StyleSheet.create({
     alignItems:'flex-end',
     alignSelf:'center'
   },
+  turnBox: {
+    backgroundColor: 'grey'
+  }
 
 });
 
