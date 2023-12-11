@@ -55,11 +55,11 @@ function HomeScreen(props) {
     })
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
-     if (e.data.action.type === "GO_BACK"){
+     if (e.data.action.type === "GO_BACK" | "POP"){
      e.preventDefault();
      }
     //  console.log(getAuthUser())
-    //  console.log(e)
+     console.log(e)
    })
 
   }, [myGames,route]);
