@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import {
   Dimensions, StyleSheet, View, Text, FlatList, Image,
-  TouchableOpacity, TouchableHighlight
+  TouchableOpacity, TouchableHighlight, Alert
 } from "react-native";
 import { Button } from "@rneui/base";
 import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 import { getAuthUser } from "../AuthManager.js";
-import { addGame, loadUserIcon, updateGame } from "../data/Actions.js";
+import { addGame, deleteGame, loadUserIcon, updateGame } from "../data/Actions.js";
 import Small from "../components/Small.js";
 import Long from "../components/Long.js";
 import { dotsBlank } from "../data/DotsBlank.js";
@@ -22,7 +22,8 @@ function DotsAndBoxesScreen(props) {
   const [turns, setTurns] = useState(1);
   const [myMoves, setMyMoves] = useState([]);
   const [sendGame, setSendGame] = useState(dotsBlank)
-  const [avs, setAvs] = useState([[0,0,0,0],[0,0,0,0]])
+  const [avs, setAvs] = useState([[0,0,0,0],[0,0,0,0]]);
+  const [fin, setFin] = useState('no')
   const getBox = [[0,5,6,11],[1,6,7,12],[2,7,8,13],[3,8,9,14],[4,9,10,15],[11,16,17,22],[12,17,18,23],[13,18,19,24],[14,19,20,25],[15,20,21,26],[22,27,28,33],[23,28,29,34],[24,29,30,35],[25,30,31,36],[26,31,32,37],[33,38,39,44],[34,39,40,45],[35,40,41,46],[36,41,42,47],[37,42,43,48],[44,49,50,55],[45,50,51,56],[46,51,52,57],[47,52,53,58],[48,53,54,59]]
   // Need a way to check game logic for player turn
   const theGames = useSelector((state) => state.myGames);
@@ -70,6 +71,7 @@ function DotsAndBoxesScreen(props) {
     setTheLines(thisGame[0].board);
     setBoxes(thisGame[0].boxes);
     getIcon(thisGame[0].players);
+    setFin(thisGame[0].finish)
     if (getAuthUser().uid === thisGame[0].players[0] && thisGame[0].turn ==='p2'){
       setTurns(0)
     }
@@ -81,7 +83,18 @@ function DotsAndBoxesScreen(props) {
   //  return(()=>{console.log('detached')})
   }, []);
 
-  // const icons = getIcon(sendGame.players)
+  const countBoxes = (p) => {
+    let theCount = 0;
+    for (let i = 0, len = theBoxes.length; i < len; i++) {
+      if (p === theBoxes[i]) {
+        theCount++
+      }
+    }
+    if (theCount > 12){
+      return 1
+    }
+    return 0
+  }
   const gettingBoxes = (grid) => {
     // console.log(grid)
     let fillBox = []
@@ -139,9 +152,19 @@ function DotsAndBoxesScreen(props) {
           boxes[newBoxes[i]]='b'
         }
       }
+      if (boxes.includes(0)===false){
+        // console.log('can end game')
+        if (getAuthUser().uid === sendGame.players[0]){
+        setFin('p1')}
+        else{
+          setFin('p2')
+        }
+
+      }
       setBoxes(boxes);
       setTheLines(grid);
       setTurns(1);
+      
     }
   }
   const dispatch = useDispatch();
@@ -153,6 +176,7 @@ function DotsAndBoxesScreen(props) {
 
         <View style={styles.scoreContainer}>
           <UserIcon avatar={avs[0]} b={'blue'} />
+          <Text>{fin}</Text>
           <UserIcon avatar={avs[1]} b={'#C00'}/>
           
           {/* <Text style={styles.gameText}>HI</Text> */}
@@ -210,11 +234,12 @@ function DotsAndBoxesScreen(props) {
               width: 200,
               margin:10
             }}
-            // ADD THE CREATE GAME FUNCTION HERE!!!!!!!!
+
             style={styles.gameButton}
-            title={"Send Move"}
+            
+            title={fin==='no'?'Send Move' : 'Finish Game'}
             onPress={() => {
-              //  This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
+              // Create Game -- This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
               if (route.params.type === 'new') {
                 if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
                 let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
@@ -222,6 +247,44 @@ function DotsAndBoxesScreen(props) {
                 props.navigation.navigate('Home')
                 }}
               else {
+                // Delete Game -- Check if game was finished by other player and tidy up Firebase
+                if (sendGame.finish !== 'no'){
+                  let winner = null
+                  if (getAuthUser().uid === sendGame.players[0]) {
+                    winner = countBoxes('a')
+                  } else { winner = countBoxes('b')}
+                    Alert.alert((winner===0?'You Lost :( ':'You Won!!'),'',[{text:'Finish', onPress:()=>{
+                      // TODO --- If want to add score/history at some point do it here
+                      console.log("Yup Lost")
+                      dispatch(deleteGame(sendGame.key))
+                      props.navigation.navigate('Home')
+                    }}])
+                  
+                  
+                }
+                // Check if game was finished by this player
+                else if (fin !== 'no') {
+                  let winner = null
+                  if (getAuthUser().uid === sendGame.players[0]) {
+                    winner = countBoxes('a')
+                  } else { winner = countBoxes('b')}
+                  if (winner === 0) {
+                  Alert.alert("You Lost :( ")
+                  } else {
+                    Alert.alert((winner===0?'You Lost :( ':'You Won!!'),'',[{text:'Finish', onPress:()=>{
+                      if (getAuthUser().uid === sendGame.players[0]) {
+                        let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes, finish:'p1'}
+                        dispatch(updateGame(theGame))
+                        props.navigation.navigate('Home')
+                      } else {
+                        let theGame = {...sendGame, p2:myMoves, turn:'p1', board: theLines, boxes: theBoxes, finish:'p2'}
+                        dispatch(updateGame(theGame))
+                        props.navigation.navigate('Home')
+                      }
+                    }}])
+                  }
+                } else {
+                // Regular Move -- Check which player we are and if moves are spent to send the correct turn back
                 if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
                   let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
                   dispatch(updateGame(theGame))
@@ -232,7 +295,11 @@ function DotsAndBoxesScreen(props) {
                   dispatch(updateGame(theGame))
                   props.navigation.navigate('Home')                  
                 }
-              }
+              }}
+
+
+
+
               }}
           ></Button>
           {/* TODO --- Want to later add a Redo button so they don't have to close out and get back in to select a different line. This would require changing the board(lines) based on moves and then emptying out moves. Can probably map over moves and then setMoves to [].  */}

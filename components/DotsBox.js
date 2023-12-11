@@ -12,14 +12,14 @@ function DotsBox(props) {
    }
    if (props.num === 'a') {
       return (
-         <View style={[styles.long, {backgroundColor:'darkblue'}]} >
+         <View style={[styles.long, {backgroundColor:'blue',borderWidth:5}]} >
          </View>
       )
    }
    if (props.num === 'b') {
       return (
          
-         <View style={[styles.long, {backgroundColor:'darkred'}]}>
+         <View style={[styles.long, {backgroundColor:'red',borderWidth:5}]}>
          </View>
          
       )
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
    //   flex: .1,
      width: '14.85%',
      backgroundColor:'white',
+   //   borderWidth:5,
      borderRadius:20,
    },
    button: {
