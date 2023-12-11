@@ -57,7 +57,7 @@ var ANIMAL_WORDS = [
   'Vulture',
   'Weasel',
   'Walrus',
-  'Xenacanthus',
+  'Xerus',
   'Yoranian',
   'Zonkey'
   ];
