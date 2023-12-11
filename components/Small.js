@@ -29,7 +29,7 @@ function Small(props) {
    }
 
       return (
-         <TouchableOpacity style={[styles.button, {backgroundColor: props.color ?? '#CCC'}]} onPress={()=> {props.press(props.num)}}>
+         <TouchableOpacity style={[styles.button, {backgroundColor: props.color ?? '#FFF'}]} onPress={()=> {props.press(props.num)}}>
          {/* <View>
          </View> */}
          </TouchableOpacity>

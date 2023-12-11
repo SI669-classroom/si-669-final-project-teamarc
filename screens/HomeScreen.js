@@ -46,6 +46,16 @@ function HomeScreen(props) {
       return turnBox(1)
     }
   }
+  const checkFinish = (i) => {
+    if (myId === i.players[0] & i.finish ==='p1') {
+      return true
+    }
+    if (myId === i.players[1] & i.finish ==='p2') {
+      return true
+    } else {
+      return false
+    }
+  }
 
   useEffect(() => {
     dispatch(subToGames());
@@ -55,7 +65,7 @@ function HomeScreen(props) {
     })
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
-     if (e.data.action.type === "POP" | 'GO_BACK'){
+     if (e.data.action.type === "GO_BACK" | "POP"){
      e.preventDefault();
      }
     //  console.log(getAuthUser())
@@ -79,6 +89,7 @@ function HomeScreen(props) {
           data={myGames}
           renderItem={({item})=>{
             let img = `../images/${item.type}Icon.png`
+            if (!checkFinish(item)) {
             return (
               <TouchableOpacity
                 onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
@@ -94,7 +105,7 @@ function HomeScreen(props) {
             source={pics[item.type]} />
               </View>
               </TouchableOpacity>
-            );
+            ); } else {return (<></>)}
           }}
         />
       <View style={styles.buttonContainer}>

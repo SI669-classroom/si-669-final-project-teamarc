@@ -1,7 +1,7 @@
 
 
 import { initializeApp } from 'firebase/app';
-import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot, limit, getDoc } from 'firebase/firestore';
+import { setDoc, addDoc, query, where, doc, getFirestore, getDocs, orderBy, collection, onSnapshot, querySnapshot, limit, getDoc, deleteDoc } from 'firebase/firestore';
 
 import { firebaseConfig } from '../Secrets';
 import { ADD_USER, LOAD_USERS, SET_CURRENT_CHAT, SIGN_OUT, ADD_GAME, LOAD_GAMES, UPDATE_GAME } from '../Reducer';
@@ -157,6 +157,11 @@ const updateGame = (game) => {
         newGame: game
       }
     });    
+  }
+}
+const deleteGame = (key) => {
+  return async (dispatch) => {
+    deleteDoc(doc(db, 'games', key))
   }
 }
 // const joinGame = (game) => {
@@ -317,4 +322,4 @@ const addUser = (user) => {
   }
 }
 
-export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames, gettingGame, joinGame, updateGame, subToGames, loadUserIcon, updateUserIcon }
+export { addUser, addOrSelectChat, subscribeToUserUpdates, addCurrentChatMessage, unsubscribeFromUsers, unsubscribeFromChat, addGame, loadGames, gettingGame, joinGame, updateGame, subToGames, loadUserIcon, updateUserIcon, deleteGame }
