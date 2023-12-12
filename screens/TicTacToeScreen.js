@@ -15,7 +15,7 @@ import { getAuthUser } from "../AuthManager.js";
 import { addGame, updateGame, joinGame } from "../data/Actions.js";
 import Square from "../components/Square.js";
 import { serverTimestamp } from "firebase/firestore";
-import { current } from "@reduxjs/toolkit";
+import { current, legacy_createStore } from "@reduxjs/toolkit";
 
 
 
@@ -34,11 +34,13 @@ function Board({ xIsNext, squares, onPlay }) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares);
+  const winner = calculateWinner(squares); // currentMove === 9 ? 'yes' : 'no'
+  //squares.filter(value => value !== null).length === 9;
   let status;
   if (winner) {
     status = 'Winner: ' + winner;
-
+  } else if (squares.filter(value => value !== null).length === 9){
+    status = 'Draw';
   } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
@@ -70,7 +72,7 @@ function Board({ xIsNext, squares, onPlay }) {
       </View>  
     </View> 
   );
-}
+} //Board component ends here
 
 //main component of the screen, containing the board
 function TicTacToeScreen(props) {
@@ -79,8 +81,6 @@ function TicTacToeScreen(props) {
   const myKey = getAuthUser().uid;
 
   const [history, setHistory] = useState([Array(9).fill(null)]); //initialize the board with 9 empty grids
-  //TODO: initiate currentMove as the index of the current move (0-9), or round number from 0-8
-  const xIsNext = currentMove % 2 === 0; //indicator of which symbol is to be played next (x or o)
   //TODO: set currentSquares as what is currently on the board
 
   //TODO: initialize the sendGame object as the game object to be sent to firebase, with the following properties:
@@ -94,13 +94,21 @@ function TicTacToeScreen(props) {
   const theGames = useSelector((state) => state.myGames); // this gets a list of all game objects, including other types of games from the firebase
 
   const [currentMove, setCurrentMove] = useState(0); // Keep track of current move index.
-  const [sendGame, setSendGame] = useState(null); // Placeholder for the game state to send.
-  const currentSquares = history[currentMove];
+
+  //TODO: initiate currentMove as the index of the current move (0-9), or round number from 0-8
   
+  const [sendGame, setSendGame] = useState(null); // Placeholder for the game state to send to firehbase.
+  let currentSquares = Array(9).fill(null); //history[currentMove];
+
+  // if (!currentSquares) {
+  //   // initialize it with an empty board.
+  //   currentSquares = Array(9).fill(null);
+  // }
+
+  let xIsNext = currentMove % 2 === 0; //indicator of which symbol is to be played next (x or o)
+
   useEffect(()=>{
-    if (route.params.type === 'new') {
-      let current = {...sendGame, players:[getAuthUser().uid, 'free']};
-      
+    if (route.params.type === 'new') { //if this is a new game      
       console.log('new game');
       const initialGame = {
         tttboard: Array(9).fill(null),
@@ -108,7 +116,7 @@ function TicTacToeScreen(props) {
         players: [getAuthUser().uid, ''],
         finish: 'no',
         type: 'TicTacToe',
-        roundNumber: 0
+        roundNumber: 0 //this will be the same as currentMove; current move will get value from here
       };
       setSendGame(initialGame);
     }
@@ -122,19 +130,25 @@ function TicTacToeScreen(props) {
 
     // let thisGame = theGames.filter(elem=>elem.key === route.params.type);
 
-    // let retrievedGame = thisGame[0];
-
     const thisGame = theGames.find(game => game.key === route.params.gameId);
       
-      if (thisGame) {
+      if (thisGame) { // If the game exists
         setSendGame(thisGame); // Assuming thisGame has all the required fields.
-        setHistory(thisGame.history || [Array(9).fill(null)]);
+        // setHistory(thisGame.history || [Array(9).fill(null)]);
+
         setCurrentMove(thisGame.roundNumber || 0);
+        setHistory(prevHistory => [...prevHistory.slice(0, thisGame.roundNumber), thisGame.tttboard]);
+        currentSquares = thisGame.tttboard; // able to successfully retrieve the board state
+        xIsNext = currentMove % 2 === 0; //update xIsNext
+        // console.log("successfully retrieved thisGame", thisGame); // was able to successfully retrieve the game object
+        console.log("now, the history object is", history); // it should have two obejcts in the array
+        console.log("current board state is ", currentSquares); // it should have two obejcts in the array
       }
 
     //TODO: update history, currentMove, currentSquares, and xIsNext from the retrievedGame object
    }
-  }, [route.params.type, route.params.gameId, theGames]);
+   
+  }, [route.params.type, route.params.gameId, theGames]); //useEffect ends here theGames
 
 
   function handlePlay(nextSquares) { 
@@ -143,20 +157,33 @@ function TicTacToeScreen(props) {
     // setHistory(nextHistory);
     // setCurrentMove(nextHistory.length - 1);
 
-    setHistory(prevHistory => {
-      const newHistory = prevHistory.slice(0, currentMove + 1);
-      return [...newHistory, nextSquares];
-    });
-    setCurrentMove(prevMove => prevMove + 1);
-    
-    // Update sendGame state with new board state, turn, and round number.
+    // setHistory(prevHistory => {
+    //   // const newHistory = prevHistory.slice(0, currentMove + 1);
+    //   const newHistory = prevHistory.slice(0, 1);
+    //   return [...prevHistory, nextSquares];
+    // });
+    const newMoveIndex = currentMove + 1;
+    setCurrentMove(newMoveIndex);
+    const nextTurn = newMoveIndex % 2 === 0 ? 'p1' : 'p2';
+
     setSendGame(prevSendGame => ({
       ...prevSendGame,
       tttboard: nextSquares,
-      turn: xIsNext ? 'p2' : 'p1', // Flipping the turn
-      roundNumber: currentMove + 1, // Incrementing the round number
+      turn: nextTurn,
+      roundNumber: newMoveIndex,
     }));
-  }
+
+    // setHistory(prevHistory => [...prevHistory, nextSquares]);//not working
+
+    // console.log(nextSquares); // nextSquare is able to be updated
+    console.log("current board state is ", nextSquares); 
+  } //handleplay ends
+
+  useEffect(() => {
+    console.log("The sendGame object has been updated: ", sendGame);
+    console.log("current round number is ", currentMove);
+
+  }, [sendGame]);
 
   return (
     <View style={styles.container}>
@@ -195,16 +222,30 @@ function TicTacToeScreen(props) {
               //TODO: update the sendGame object with the current board state, turn, and round number
               
               const winner = calculateWinner(currentSquares);
+              let nextTurn = (currentMove + 1) % 2 === 0 ? 'p1' : 'p2';
 
               if (winner || currentMove === 9) {
                 // Game finished
-                sendGame.finish = 'yes'; // Update finish state
+                setSendGame(prevSendGame => ({
+                  ...prevSendGame,
+                  finish: 'yes',
+                  roundNumber: currentMove,
+                  turn: nextTurn, // Setting the next turn
+              }));}
+
+              else{
+                setSendGame(prevSendGame => ({
+                  ...prevSendGame,
+                  tttboard: currentSquares,
+                  roundNumber: currentMove + 1,
+                  turn: nextTurn, // Setting the next turn
+              })); 
               }
 
               let theGame = {
                 ...sendGame,
-                tttboard: currentSquares,
-                roundNumber: currentMove
+                finish: winner || currentMove === 9 ? 'yes' : 'no',
+                // turn: xIsNext ? 'p2' : 'p1', xisnext is already updated in handlePlay
               };
 
               if (route.params.type === 'new') {
@@ -215,13 +256,17 @@ function TicTacToeScreen(props) {
                 // }
               }
               else {
-                if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && currentMove === 0) {
+                
+                if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1') {
                   // let theGame = {...sendGame, turn:'p2', tttboard: currentSquares, roundNumber: currentMove}
+                  theGame = {...sendGame, turn:'p2'} //chang the turn
                   dispatch(updateGame(theGame))
+                  console.log("updated: theGame", theGame);
                   props.navigation.navigate('Home') //navigate to home screen
                   }
-                if (getAuthUser().uid === sendGame.players[1] && sendGame.turn ==='p2' && currentMove === 0) {
+                if (getAuthUser().uid === sendGame.players[1] && sendGame.turn ==='p2') {
                   // let theGame = {...sendGame, turn:'p1', tttboard: currentSquares, roundNumber: currentMove}
+                  theGame = {...sendGame, turn:'p1'}
                   dispatch(updateGame(theGame))
                   props.navigation.navigate('Home')                  
                 }
