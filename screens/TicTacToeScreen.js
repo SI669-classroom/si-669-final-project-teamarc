@@ -83,8 +83,6 @@ function TicTacToeScreen(props) {
 
   const [history, setHistory] = useState([Array(9).fill(null)]); 
   //initialize the board with 9 empty grids; history only records two states of the board (before change and after user has clicked the board)
-  
-  
 
   //TODO: initialize the sendGame object as the game object to be sent to firebase, with the following properties:
   // - tttboard: the current board state
@@ -136,12 +134,17 @@ function TicTacToeScreen(props) {
         setSendGame(thisGame); // Assuming thisGame has all the required fields.
 
         setCurrentMove(thisGame.roundNumber || 0); // Set the current move index to the round number of the game object
-        setHistory(prevHistory => [...prevHistory.slice(0, thisGame.roundNumber), thisGame.tttboard]);
+        
+        
         currentSquares = thisGame.tttboard; // able to successfully retrieve the board state
         xIsNext = currentMove % 2 === 0; //update xIsNext
-        // console.log("successfully retrieved thisGame", thisGame); // was able to successfully retrieve the game object
-        console.log("now, the history object is", history); // it should have two obejcts in the array
-        console.log("current board state is ", currentSquares); // it should have two obejcts in the array
+        setHistory(prevHistory => prevHistory[0] = currentSquares);
+        console.log("successfully retrieved thisGame", thisGame); // was able to successfully retrieve the game object
+        // console.log("now, the history object is", history); // it should have one array containing the retrieved currentSquares 
+        // console.log("current board state is ", currentSquares); // it should have two obejcts in the array
+      }
+      else{
+        console.log("game does not exist");
       }
 
     //TODO: update history, currentMove, currentSquares, and xIsNext from the retrievedGame object
@@ -171,16 +174,21 @@ function TicTacToeScreen(props) {
       turn: nextTurn,
       roundNumber: newMoveIndex,
     }));
+    
+    setHistory(prevHistory => [...prevHistory, nextSquares]); //added nextSquares to history
 
     // setHistory(prevHistory => [...prevHistory, nextSquares]);//not working
 
     // console.log(nextSquares); // nextSquare is able to be updated
-    console.log("current board state is ", nextSquares); 
+    console.log("This happens after handleplay is called, and nextSquare value is ", nextSquares); 
   } //handleplay ends
 
   useEffect(() => {
     console.log("The sendGame object has been updated: ", sendGame);
-    console.log("current square state is ", currentSquares);
+    currentSquares = history[history.length - 1]; // this is updating currentSquares value whenever history has new addition
+
+    console.log("After update, currentSquares value is ", currentSquares);
+    console.log("the histroy is ", history);
 
   }, [sendGame]);
 
