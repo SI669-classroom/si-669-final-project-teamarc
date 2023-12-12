@@ -97,7 +97,7 @@ function HomeScreen(props) {
               <View key={item.key} style={styles.gameContainer}>
               <View>
                 <Text>{checkTurn(item)}</Text>
-                <Text>Game: {item?.key.slice(-4)}</Text>
+                <Text>Game: {item?.type}</Text>
               </View>
               <Image
             style={styles.image}
