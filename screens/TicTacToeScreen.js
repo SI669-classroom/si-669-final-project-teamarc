@@ -386,9 +386,13 @@ const styles = StyleSheet.create({
 
   //styles for the board itself
   boardRowAfter: {
-    flexDirection: 'row',       // align children horizontally
-    justifyContent: 'center',   // center children in the row
-    alignItems: 'center',       // align items in the center of the cross-axis
+    // flexDirection: 'row',       // align children horizontally
+    // justifyContent: 'center',   // center children in the row
+    // alignItems: 'center',       // align items in the center of the cross-axis
+
+    flexDirection: 'row', 
+    borderWidth: 2,
+    borderColor: '#444',
   },
   status:{
     // marginBottom: '10',
