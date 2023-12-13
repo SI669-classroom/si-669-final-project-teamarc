@@ -14,6 +14,8 @@ import Long from "../components/Long.js";
 import { dotsBlank } from "../data/DotsBlank.js";
 import UserIcon from "../components/UserIcon.js";
 import DotsBox from "../components/DotsBox.js";
+import { Entypo } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 function DotsAndBoxesScreen(props) {
   const { navigation, route } = props;
@@ -174,8 +176,8 @@ function DotsAndBoxesScreen(props) {
       <View style={styles.header}>
 
         <View style={styles.scoreContainer}>
-          <UserIcon avatar={avs[0]} b={'blue'} />
-          <Text>{fin}</Text>
+          <UserIcon avatar={avs[0]} b={'#00C'} />
+          <View>{sendGame.turn === 'p1' ? <FontAwesome5 name="hand-point-left" size={36} color="blue" />:<FontAwesome5 name="hand-point-right" size={36} color="red" />}</View>
           <UserIcon avatar={avs[1]} b={'#C00'}/>
           
           {/* <Text style={styles.gameText}>HI</Text> */}
@@ -317,7 +319,7 @@ const styles = StyleSheet.create({
     paddingTop: '12%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#0049F0'
+    backgroundColor: '#0085D1'
   },
   header: {
     paddingTop: '10%',
