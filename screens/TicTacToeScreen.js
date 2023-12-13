@@ -75,6 +75,13 @@ function Board({ xIsNext, squares, onPlay }) {
 } //Board component ends here, which takes in xIsNext, change the squares based on that
 // squares (the previous array of board values, and onPlay as props
 
+
+
+
+
+
+
+
 //main component of the screen, containing the board
 function TicTacToeScreen(props) {
   const {navigation, route} = props;
@@ -97,7 +104,16 @@ function TicTacToeScreen(props) {
   //TODO: initiate currentMove as the index of the current move (0-9), or round number from 0-8
   const [currentMove, setCurrentMove] = useState(0); // Keep track of current move index.
 
-  const [sendGame, setSendGame] = useState(null); // Placeholder for the game object to send and stored to firehbase.
+  const [sendGame, setSendGame] = useState(
+    {
+      tttboard: Array(9).fill(null),
+      turn: 'p1', //p1 always initiate the game and use X
+      players: [getAuthUser().uid, ''],
+      finish: 'no',
+      type: 'TicTacToe',
+      roundNumber: 0 //this will be the same as currentMove; currentMove will get value from here
+    }
+  ); // Placeholder for the game object to send and stored to firehbase.
   
   //TODO: set currentSquares as what is currently on the board. Because we are just innitiating now, it would be null
   let currentSquares = Array(9).fill(null); //history[currentMove];
@@ -128,10 +144,17 @@ function TicTacToeScreen(props) {
 
     // let thisGame = theGames.filter(elem=>elem.key === route.params.type);
 
-    const thisGame = theGames.find(game => game.key === route.params.gameId); //getting one game object from theGames array
-      
+    const thisGameType = theGames.filter(elem=>elem.type === 'TicTacToe'); //filtering for tictactoe only, among all of the games
+    
+    const thisGame = thisGameType.find(game => game.key === route.params.gameId); //getting one game object from theGames array
+
+
       if (thisGame) { // If the game exists
         setSendGame(thisGame); // Assuming thisGame has all the required fields.
+
+        // console.log("route param id is: ", route.params.gameId);
+        // console.log("game key is: ", thisGame.key)
+        console.log("all games retrieved for tictactoe: ", thisGameType); // thisGame is able to be retrieved
 
         setCurrentMove(thisGame.roundNumber || 0); // Set the current move index to the round number of the game object
         
@@ -139,7 +162,7 @@ function TicTacToeScreen(props) {
         currentSquares = thisGame.tttboard; // able to successfully retrieve the board state
         xIsNext = currentMove % 2 === 0; //update xIsNext
         setHistory(prevHistory => prevHistory[0] = currentSquares);
-        console.log("successfully retrieved thisGame", thisGame); // was able to successfully retrieve the game object
+        // console.log("successfully retrieved thisGame", thisGame); // was able to successfully retrieve the game object
         // console.log("now, the history object is", history); // it should have one array containing the retrieved currentSquares 
         // console.log("current board state is ", currentSquares); // it should have two obejcts in the array
       }
@@ -187,8 +210,8 @@ function TicTacToeScreen(props) {
     console.log("The sendGame object has been updated: ", sendGame);
     currentSquares = history[history.length - 1]; // this is updating currentSquares value whenever history has new addition
 
-    console.log("After update, currentSquares value is ", currentSquares);
-    console.log("the histroy is ", history);
+    // console.log("After update, currentSquares value is ", currentSquares);
+    // console.log("the histroy is ", history);
 
   }, [sendGame]);
 
@@ -206,7 +229,7 @@ function TicTacToeScreen(props) {
       </View> 
 
         <View style={styles.game}>
-          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} /> 
+          <Board xIsNext={xIsNext} squares={sendGame.tttboard} onPlay={handlePlay} /> 
 
         <View style={styles.allButtons}>
           <Button
@@ -268,7 +291,7 @@ function TicTacToeScreen(props) {
                   // let theGame = {...sendGame, turn:'p2', tttboard: currentSquares, roundNumber: currentMove}
                   theGame = {...sendGame, turn:'p2'} //chang the turn
                   dispatch(updateGame(theGame))
-                  console.log("updated: theGame", theGame);
+                  console.log("updated: theGame after p1 clicked on a box", theGame);
                   props.navigation.navigate('Home') //navigate to home screen
                   }
                 if (getAuthUser().uid === sendGame.players[1] && sendGame.turn ==='p2') {

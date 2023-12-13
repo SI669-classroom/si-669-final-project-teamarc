@@ -83,8 +83,9 @@ function HomeScreen(props) {
    })
 
   }, [myGames]);
-  const myGames = useSelector((state)=>state.myGames)
-  // console.log(myGames)
+  const myGames = useSelector((state)=>state.myGames);
+  console.log("after homescreen is loaded, mygame is: ", myGames); // should include every game
+  console.log("after homescreen is loaded, number of games are ", myGames);
 
   return(
     <View style={styles.container}>
