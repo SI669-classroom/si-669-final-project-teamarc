@@ -21,34 +21,6 @@ function HomeScreen(props) {
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
   const myId = getAuthUser().uid;
   const { navigation, route } = props;
-<<<<<<< HEAD
-
-
-  // const subscribeToMessageBoard = () => {
-  //   const q = query(
-  //     collection(db, 'messageBoard'),
-  //     orderBy('timestamp', 'desc'),
-  //     limit(3)
-  //   );
-  //   onSnapshot(q, mbSnapshot => {
-  //     const newMessages = [];
-  //     mbSnapshot.forEach(mSnap => {
-  //       let newMessage = mSnap.data();
-  //       newMessage.key = mSnap.id;
-  //       newMessages.push(newMessage);
-  //     });
-  //     setMessages(newMessages);
-  //   }
-  // )};
-
-  // useEffect(()=>{
-  //   subscribeToMessageBoard();
-  // }, []);
-
-
-=======
-
->>>>>>> main
 
   const turnBox = (n) => {
     if (n===0) {
@@ -101,16 +73,9 @@ function HomeScreen(props) {
      console.log(e)
    })
 
-<<<<<<< HEAD
-  }, [myGames]);
-  const myGames = useSelector((state)=>state.myGames);
-  console.log("after homescreen is loaded, mygame is: ", myGames); // should include every game
-  console.log("after homescreen is loaded, number of games are ", myGames);
-=======
   }, [myGames,route]);
   const myGames = useSelector((state)=>state.myGames)
   // console.log(myGames)
->>>>>>> main
 
   return(
       <View style={styles.container}>
