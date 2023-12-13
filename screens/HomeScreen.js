@@ -72,10 +72,12 @@ function HomeScreen(props) {
     //  console.log(getAuthUser())
      console.log(e)
    })
+   
 
   }, [myGames,route]);
-  const myGames = useSelector((state)=>state.myGames)
-  // console.log(myGames)
+  // const myGames = useSelector((state)=>state.myGames);
+  const myGames = useSelector((state)=>state.myGames);
+  console.log("my games are: ", myGames);
 
   return(
       <View style={styles.container}>

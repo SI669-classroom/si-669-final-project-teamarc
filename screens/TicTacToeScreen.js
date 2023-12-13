@@ -146,9 +146,9 @@ function TicTacToeScreen(props) {
 
     const thisGameType = theGames.filter(elem=>elem.type === 'TicTacToe'); //filtering for tictactoe only, among all of the games
     
-    const thisGame = thisGameType.find(game => game.key === route.params.gameId); //getting one game object from theGames array
+    let thisGame = thisGameType.find(game => game.key === route.params.gameId); //getting one game object from theGames array
 
-
+      thisGame = thisGameType[0]; // just testing the first game object in the array for now
       if (thisGame) { // If the game exists
         setSendGame(thisGame); // Assuming thisGame has all the required fields.
 
