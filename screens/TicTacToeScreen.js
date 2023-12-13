@@ -10,7 +10,7 @@ import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
 import LogoImage from '../components/LogoImage.js'
 import { getAuthUser } from "../AuthManager.js";
-import { addGame } from "../data/Actions.js";
+import { addGame, updateGame } from "../data/Actions.js";
 import Square from "../components/Square.js";
 import { serverTimestamp } from "firebase/firestore";
 
@@ -18,102 +18,93 @@ import { serverTimestamp } from "firebase/firestore";
 // - Send status to firebase after each move
 // - Load status from firebase on start
 
-function Board({ xIsNext, squares, onPlay }) {
-  function handleClick(i) {
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    const nextSquares = squares.slice();
-    if (xIsNext) {
-      nextSquares[i] = 'X';
-    } else {
-      nextSquares[i] = 'O';
-    }
-    onPlay(nextSquares);
-  }
 
-  const winner = calculateWinner(squares);
-  let status;
-  if (winner) {
-    status = 'Winner: ' + winner;
-  } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-  }
-
-  return (
-    <View>
-      <View style={styles.status}>
-        <Text style={styles.status}>
-        {status}
-        </Text>
-      </View>
-
-      <View style={styles.boardRowAfter}>
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} style={styles.square} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </View> 
-
-      <View style={styles.boardRowAfter}>
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </View> 
-
-      <View style={styles.boardRowAfter}>
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </View>  
-    </View> 
-  );
-}
 
 //main component of the screen containing the board
 function TicTacToeScreen(props) {
-  useEffect(()=>{
-    // console.log('In TicTacToe');
-
-    // return(()=>{console.log('Left TicTacToe')})
-  }, [])
-
-  const dispatch = useDispatch();
   const myKey = getAuthUser().uid;
-
-  const [history, setHistory] = useState([Array(9).fill(null)]); //initialize the board with 9 empty grids
+  const dispatch = useDispatch();
+  const [history, setHistory] = useState(Array(9).fill(null)); //initialize the board with 9 empty grids
   const [currentMove, setCurrentMove] = useState(0);//currentMove is the index of the current move (0-9)
   const xIsNext = currentMove % 2 === 0; //indicator of which symbol is to be played next (x or o)
-  const currentSquares = history[currentMove]; //get a list of the state of current squares
-  const [status, setStatus] = useState('Next player: ' + (xIsNext ? 'X' : 'O'));
-
+  const currentSquares = history; //get a list of the state of current squares
+  const [players, setPlayers] = useState([myKey,'free'])
+  // const [status, setStatus] = useState('Next player: ' + (xIsNext ? 'X' : 'O'));
+  const theGames = useSelector((state) => state.myGames);
   useEffect(() => {
     // This will run every time `currentMove` or `history` changes
-    console.log(`The most recent move:`, currentSquares);
-  }, [currentMove, history]);
+    // console.log(`The most recent move:`, history);
+    if (props.route.params.type !== 'new') {
+      let thisGame = theGames.find(elem=>elem.key === props.route.params.type);
+      console.log(thisGame)
+      setHistory(thisGame.board)
+      setCurrentMove(thisGame.moves)
+      setPlayers(thisGame.players)
 
-  function handlePlay(nextSquares) {
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
-    setHistory(nextHistory);
-    setCurrentMove(nextHistory.length - 1);
-  }
+    }
+  }, []);
 
-  function jumpTo(nextMove) {
-    setCurrentMove(nextMove);
-  }
-
-  const moves = ({ item, index }) => {
-    const move = index;
-    const description = move ?
-      `Go to move #${move}` :
-      'Go to game start';
+  function Board({ xIsNext, squares, handlePlay }) {
+    function handleClick(i) {
+      console.log('squares is : ',JSON.stringify(squares))
+      console.log('moves was : ', currentMove)
+      if (calculateWinner(squares)) {
+        return;
+      }
+      // Checks if current players turn
+      if (myKey !== players[currentMove % 2]) {
+        return;
+      }
+      let nextSquares = [...squares];
+      if (xIsNext) {
+        nextSquares[i] = 'X';
+      } else {
+        nextSquares[i] = 'O';
+      }
+      handlePlay(nextSquares);
+    }
+  
+    const winner = calculateWinner(squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    }
+  
     return (
-      <View style={styles.moveListItem}>
-        <Text style={styles.moveListItemText} onPress={() => jumpTo(move)}>
-          {description}
-        </Text>
-      </View>
+      <View>
+        <View style={styles.status}>
+          <Text style={styles.status}>
+          {status}
+          </Text>
+        </View>
+  
+        <View style={styles.boardRowAfter}>
+          <Square value={squares[0]} onSquareClick={() => handleClick(0)} style={styles.square} />
+          <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
+          <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+        </View> 
+  
+        <View style={styles.boardRowAfter}>
+          <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
+          <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
+          <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+        </View> 
+  
+        <View style={styles.boardRowAfter}>
+          <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
+          <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
+          <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+        </View>  
+      </View> 
     );
-  };
+  }
+  function handlePlay(nextSquares) {
+    // const nextHistory = [...nextSquares];
+    setHistory(nextSquares);
+    setCurrentMove(currentMove+1);
+  }
 
   return (
     <View style={styles.container}>
@@ -129,13 +120,13 @@ function TicTacToeScreen(props) {
       </View> 
 
         <View style={styles.game}>
-          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} /> 
-          <FlatList
+          <Board xIsNext={xIsNext} squares={currentSquares} handlePlay={handlePlay} /> 
+          {/* <FlatList
             data={history}
             renderItem={moves}
             keyExtractor={(item, index) => index.toString()}
             style={styles.movesList}
-          /> 
+          />  */}
         
         <View style={styles.allButtons}>
           <Button
@@ -154,10 +145,18 @@ function TicTacToeScreen(props) {
             }}
             style={styles.gameButton}
             title={"Send Move"}
+            // This onPress needs to send based off what move it is. The new game should only be called when the type that we navigated to was 'new'.  Else, we need to be sending the board back and switching the turn.
             onPress={() => {
-              let theGame = {type:'TicTacToe', players:[myKey, 'free'], p1Moves:[1], p2Moves:[0], turn:'p2'}
-              dispatch(addGame(theGame))
-              props.navigation.navigate('Home')
+              if (props.route.params.type === 'new'){
+                let theGame = {type:'TicTacToe', players:[myKey, 'free'], board:history, turn:'p2', moves:currentMove, finish:'no'}
+                dispatch(addGame(theGame))
+                props.navigation.navigate('Home')
+              } else {console.log('not a new game')
+                let thisGame = theGames.find(elem=>elem.key === props.route.params.type);
+                let theGame = {...thisGame, board:history, turn:(currentMove % 2 === 0 ? 'p1':'p2'), moves:currentMove, finish:'no'}
+                dispatch(updateGame(theGame))
+                props.navigation.navigate('Home')
+              }
             }}
 
           /> 

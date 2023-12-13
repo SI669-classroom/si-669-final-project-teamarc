@@ -60,7 +60,6 @@ function DotsAndBoxesScreen(props) {
       setSendGame(current)
       //  New Game Stuff
       getIcon(current.players)
-
     }
    else {
     // Existing Game Stuff
