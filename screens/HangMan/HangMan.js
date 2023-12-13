@@ -132,7 +132,7 @@ function HangManScreen(props) {
 
 
 
-        {/* <View style={styles.allButtons}>
+        <View style={styles.allButtons}>
         <Button
           color="#FFD600"
           buttonStyle={{
@@ -150,13 +150,13 @@ function HangManScreen(props) {
           style={styles.gameButton}
           title={"Send Move"}
           onPress={() => {
-            let theGame = { type: 'HangMan', players: [myKey, 'free'], p1Moves: [1], p2Moves: [0], turn: 'p2' }
+            let theGame = { type: 'HangMan', word: word, players: [myKey, 'free'], p1Moves: [1], p2Moves: [0], turn: 'p2' }
             dispatch(addGame(theGame))
             props.navigation.navigate('Home')
           }}
         />
 
-      </View> */}
+      </View>
       </ScrollView>
     </View >
   );

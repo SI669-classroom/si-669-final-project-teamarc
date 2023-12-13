@@ -9,16 +9,19 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useEffect } from 'react';
 import LogoImage from '../components/LogoImage';
-import { loadGames, subToGames } from '../data/Actions';
+import { loadGames, loadUserIcon, subToGames } from '../data/Actions';
 import { Text } from 'react-native';
 import { Image } from 'react-native';
 import { collection, query } from 'firebase/firestore';
+import UserIcon from '../components/UserIcon';
 function HomeScreen(props) {
   // const thisGame = useSelector((state) => state.myGames);
   const dispatch = useDispatch();
+  const [av, setAv] = useState([0,0,0,0])
   const pics = {DotsAndBoxes: require('../images/DotsAndBoxesIcon.png'), HangMan: require('../images/HangManIcon.png'), TicTacToe: require('../images/TicTacToeIcon.png')}
   const myId = getAuthUser().uid;
   const { navigation, route } = props;
+<<<<<<< HEAD
 
 
   // const subscribeToMessageBoard = () => {
@@ -43,6 +46,9 @@ function HomeScreen(props) {
   // }, []);
 
 
+=======
+
+>>>>>>> main
 
   const turnBox = (n) => {
     if (n===0) {
@@ -69,27 +75,49 @@ function HomeScreen(props) {
       return turnBox(1)
     }
   }
+  const checkFinish = (i) => {
+    if (myId === i.players[0] & i.finish ==='p1') {
+      return true
+    }
+    if (myId === i.players[1] & i.finish ==='p2') {
+      return true
+    } else {
+      return false
+    }
+  }
 
   useEffect(() => {
-    // console.log(getAuthUser().uid)
-    
     dispatch(subToGames());
+    loadUserIcon(getAuthUser().uid).then((e)=>{
+      // console.log('next',e)
+      setAv([...e.avatar])
+    })
    navigation.addListener('beforeRemove', (e) => {
      // This is to stop the user from accidentally going back to the Login Screen.
-     if (e.data.action.type === "GO_BACK"){
+     if (e.data.action.type === "GO_BACK" | "POP"){
      e.preventDefault();
      }
-    //  console.log(e)
+    //  console.log(getAuthUser())
+     console.log(e)
    })
 
+<<<<<<< HEAD
   }, [myGames]);
   const myGames = useSelector((state)=>state.myGames);
   console.log("after homescreen is loaded, mygame is: ", myGames); // should include every game
   console.log("after homescreen is loaded, number of games are ", myGames);
+=======
+  }, [myGames,route]);
+  const myGames = useSelector((state)=>state.myGames)
+  // console.log(myGames)
+>>>>>>> main
 
   return(
-    <View style={styles.container}>
-            <LogoImage />
+      <View style={styles.container}>
+        <View style={styles.header}>
+        <UserIcon avatar={av} b='black' />   
+        <LogoImage />
+        </View>
       <View style={styles.listContainer}>
       </View>
       <Text>Active Games</Text>
@@ -97,19 +125,23 @@ function HomeScreen(props) {
           data={myGames}
           renderItem={({item})=>{
             let img = `../images/${item.type}Icon.png`
+            if (!checkFinish(item)) {
             return (
               <TouchableOpacity
                 onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
               >
               <View key={item.key} style={styles.gameContainer}>
-              <Text>{checkTurn(item)}</Text>
+              <View>
+                <Text>{checkTurn(item)}</Text>
+                <Text>Game: {item?.type}</Text>
+              </View>
               <Image
             style={styles.image}
             // {item.type ==='DotsAndBoxes' ? source='../images/DotsAndBoxesIcon.png':null}
             source={pics[item.type]} />
               </View>
               </TouchableOpacity>
-            );
+            ); } else {return (<></>)}
           }}
         />
       <View style={styles.buttonContainer}>
@@ -159,12 +191,22 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     // paddingTop:'12%',
-    flex: 1,
+    // flex: 1,
     flexDirection:'row',
     width: '100%',
     padding:0,
     justifyContent: 'center',
     alignItems: 'flex-end',
+    backgroundColor: '#0085D1'
+  },
+  header: {
+    // paddingTop:'12%',
+    // flex: 1,
+    flexDirection:'row',
+    width: '100%',
+    padding:0,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#0085D1'
   },
   listContainer: {
