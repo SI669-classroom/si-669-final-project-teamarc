@@ -241,6 +241,7 @@ function DotsAndBoxesScreen(props) {
             title={fin==='no'?'Send Move' : 'Finish Game'}
             onPress={() => {
               // Create Game -- This needs to be checking the game type. If 'new' do the below. If (existing), it needs to update
+              
               if (route.params.type === 'new') {
                 if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
                 let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes}
@@ -249,6 +250,12 @@ function DotsAndBoxesScreen(props) {
                 }}
               else {
                 // Delete Game -- Check if game was finished by other player and tidy up Firebase
+                if (sendGame.players.includes('forfeit')) {
+                  dispatch(deleteGame(sendGame.key))
+                  // Could still award points for participating
+                  props.navigation.navigate('Home')
+                  return;
+                }
                 if (sendGame.finish !== 'no'){
                   let winner = null
                   if (getAuthUser().uid === sendGame.players[0]) {
@@ -256,7 +263,7 @@ function DotsAndBoxesScreen(props) {
                   } else { winner = countBoxes('b')}
                     Alert.alert((winner===0?'You Lost :( ':'You Won!!'),'',[{text:'Finish', onPress:()=>{
                       // TODO --- If want to add score/history at some point do it here
-                      console.log("Yup Lost")
+                      // console.log("Yup Lost")
                       dispatch(deleteGame(sendGame.key))
                       props.navigation.navigate('Home')
                     }}])
@@ -305,7 +312,45 @@ function DotsAndBoxesScreen(props) {
           ></Button>
           {/* TODO --- Want to later add a Redo button so they don't have to close out and get back in to select a different line. This would require changing the board(lines) based on moves and then emptying out moves. Can probably map over moves and then setMoves to [].  */}
           
-        </View>
+        
+        {/* Forfeit Button */}
+        {(sendGame.players.includes('forfeit')|sendGame.players.includes('free')?null:
+        
+          <Button
+            color="#FFF"
+            buttonStyle={{
+              backgroundColor: "#C00",
+              borderRadius: 8,
+            }}
+            titleStyle={{
+              color: "white",
+              fontSize: 24,
+            }}
+            containerStyle={{
+              width: 200,
+              margin:10,
+              marginTop:15,
+
+            }}
+
+            style={styles.gameButton}
+          
+          onPress={()=>{
+            let exiting = [...sendGame.players]
+            if (getAuthUser().uid === sendGame.players[0]) {
+              exiting[0]='forfeit'
+              let theGame = {...sendGame, players:exiting, turn:'p2', finish:'p1'}
+              dispatch(updateGame(theGame))
+              props.navigation.navigate('Home')
+            } else {
+              exiting[1]='forfeit';
+              let theGame = {...sendGame,players:exiting,turn:'p1', finish:'p2'}
+              dispatch(updateGame(theGame))
+              props.navigation.navigate('Home')
+            }
+            }}>Forfeit</Button>
+        
+        )}</View>
       </View>
     </View>
   );
@@ -365,10 +410,16 @@ const styles = StyleSheet.create({
   },
 
   allButtons: {
-    flexDirection: 'column', 
-    alignSelf: 'center', 
-    width: '90%', 
-    marginTop: '5%',
+    flex:0,
+    // flexDirection: 'column-reverse', 
+    // flexWrap:'wrap',
+    // justifyContent:'flex-end',
+    height:'auto',
+    width:'auto',
+    alignSelf: 'center',
+    alignContent:'center',
+    // width: '90%', 
+    // marginTop: '5%',
   },
 
   gameButton: {

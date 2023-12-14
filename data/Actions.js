@@ -127,6 +127,9 @@ const loadGames = (myUser) => {
 }
 const  loadUserIcon = async (key) => {
   // console.log(key)
+  if (key==='forfeit') {
+    return {avatar:[0,0,0,0]}
+  }
   let m = await getDoc(doc(db, 'users', key))
   // console.log(m.data())
   return m.data()
