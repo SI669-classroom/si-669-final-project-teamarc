@@ -315,7 +315,7 @@ function DotsAndBoxesScreen(props) {
           
         
         {/* Forfeit Button */}
-        {(sendGame.players.includes('forfeit')|sendGame.players.includes('free')?null:
+        {(sendGame.players.includes('forfeit')|props.route.params.type==='new'|sendGame.players.includes('free')?null:
         
           <Button
             color="#FFF"

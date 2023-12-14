@@ -46,8 +46,8 @@ function TicTacToeScreen(props) {
 
   function Board({ xIsNext, squares, handlePlay }) {
     function handleClick(i) {
-      console.log('squares is : ',JSON.stringify(squares))
-      console.log('moves was : ', currentMove)
+      // console.log('squares is : ',JSON.stringify(squares))
+      // console.log('moves was : ', currentMove)
       if (calculateWinner(squares)) {
         return;
       }

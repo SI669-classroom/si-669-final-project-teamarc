@@ -18,8 +18,8 @@ function PlaysScreen(props) {
   return (
     <View style={styles.container}>
       <LogoImage />
-      {props.route.params.type === 'new' ? <Text>Make A Game</Text>: null}
-      {props.route.params.type === 'find' ? <Text>Find A Game</Text>: null}
+      {props.route.params.type === 'new' ? <Text style={styles.activeText}>Choose a game!</Text>: null}
+      {/* {props.route.params.type === 'find' ? <Text>Find A Game</Text>: null} */}
       <View style={styles.header}>
 
       {/* <Button
@@ -150,7 +150,11 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: '10%',
   },
-
+  activeText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 21,
+  },
   gameContainer: {
     backgroundColor: 'white',
     width: 350,
