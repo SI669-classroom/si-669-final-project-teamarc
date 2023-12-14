@@ -252,10 +252,13 @@ function DotsAndBoxesScreen(props) {
               else {
                 // Delete Game -- Check if game was finished by other player and tidy up Firebase
                 if (sendGame.players.includes('forfeit')) {
-                  dispatch(deleteGame(sendGame.key))
-                  // Could still award points for participating
-                  props.navigation.navigate('Home')
-                  return;
+                  Alert.alert('You win!','Your opponent surrendered.',[{text:'Finish', onPress:()=>{
+                    // TODO --- If want to add score/history at some point do it here
+                    // console.log("Yup Lost")
+                    dispatch(deleteGame(sendGame.key))
+                    props.navigation.navigate('Home')
+                  }}])
+                  return
                 }
                 if (sendGame.finish !== 'no'){
                   let winner = null
@@ -277,9 +280,6 @@ function DotsAndBoxesScreen(props) {
                   if (getAuthUser().uid === sendGame.players[0]) {
                     winner = countBoxes('a')
                   } else { winner = countBoxes('b')}
-                  if (winner === 0) {
-                  Alert.alert("You Lost :( ")
-                  } else {
                     Alert.alert((winner===0?'You Lost :( ':'You Won!!'),'',[{text:'Finish', onPress:()=>{
                       if (getAuthUser().uid === sendGame.players[0]) {
                         let theGame = {...sendGame, p1:myMoves, turn:'p2', board: theLines, boxes: theBoxes, finish:'p1'}
@@ -291,7 +291,7 @@ function DotsAndBoxesScreen(props) {
                         props.navigation.navigate('Home')
                       }
                     }}])
-                  }
+                  
                 } else {
                 // Regular Move -- Check which player we are and if moves are spent to send the correct turn back
                 if (getAuthUser().uid === sendGame.players[0] && sendGame.turn ==='p1' && turns === 0) {
