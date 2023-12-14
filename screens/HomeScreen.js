@@ -25,13 +25,13 @@ function HomeScreen(props) {
     if (n===0) {
       return (
         <View style={[styles.turnBox, {backgroundColor:'green'}]}>
-          <Text>My Turn</Text>
+          <Text style={styles.turnText}>My Turn</Text>
         </View>
       )
     }
     return (
       <View style={[styles.turnBox]}>
-        <Text>Their Turn</Text>
+        <Text style={styles.turnText}>Their Turn</Text>
       </View>
     )
   }
@@ -78,13 +78,15 @@ function HomeScreen(props) {
 
   return(
       <View style={styles.container}>
-        <View style={styles.header}>
-        <UserIcon avatar={av} b='black' />   
+        <View style={styles.header}> 
         <LogoImage />
         </View>
+        <View style={styles.header}>
+        <UserIcon avatar={av} b='black' />  
+        </View>
       <View style={styles.listContainer}>
+      <Text style={styles.activeText}>Active Games</Text>
       </View>
-      <Text>Active Games</Text>
       <FlatList
           data={myGames}
           renderItem={({item})=>{
@@ -163,21 +165,21 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     backgroundColor: '#0085D1'
   },
+
   header: {
-    // paddingTop:'12%',
-    // flex: 1,
+    paddingTop:'5%',
     flexDirection:'row',
     width: '100%',
-    padding:0,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0085D1'
   },
+
   listContainer: {
-    flex: 0.6,
+    flex: 0.3,
     width: '100%',
-    paddingLeft: '10%',
-    paddingTop: '10%'
+    paddingTop: '10%',
+    alignItems: 'center',
   },
   gameContainer: {
     backgroundColor: 'white',
@@ -203,7 +205,21 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   turnBox: {
-    backgroundColor: 'grey'
+    backgroundColor: 'grey',
+    padding: '2%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+
+  activeText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 21,
+  },
+
+  turnText: {
+    color: 'white',
   }
 
 });
