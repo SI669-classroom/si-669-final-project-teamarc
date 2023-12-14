@@ -44,10 +44,12 @@ const styles = StyleSheet.create({
       // width: 350,
       // flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'center',
       height: 80,
-      width:80,
+      width: 80,
       // padding: 20,
       borderRadius: 10,
+      padding: 5,
       // marginBottom: 20,
     },
  });

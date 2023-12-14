@@ -25,13 +25,13 @@ function HomeScreen(props) {
     if (n===0) {
       return (
         <View style={[styles.turnBox, {backgroundColor:'green'}]}>
-          <Text>My Turn</Text>
+          <Text style={styles.turnText}>My Turn</Text>
         </View>
       )
     }
     return (
       <View style={[styles.turnBox]}>
-        <Text>Their Turn</Text>
+        <Text style={styles.turnText}>Their Turn</Text>
       </View>
     )
   }
@@ -78,13 +78,16 @@ function HomeScreen(props) {
 
   return(
       <View style={styles.container}>
-        <View style={styles.header}>
-        <UserIcon avatar={av} b='black' />   
+        <View style={styles.header}> 
         <LogoImage />
         </View>
-      <View style={styles.listContainer}>
+        <View style={styles.header}>
+        <UserIcon avatar={av} b='black' />  
+        </View>
+      <View style={styles.listText}>
+      <Text style={styles.activeText}>Active Games</Text>
       </View>
-      <Text>Active Games</Text>
+      <View style={styles.listContainer}>
       <FlatList
           data={myGames}
           renderItem={({item})=>{
@@ -108,11 +111,15 @@ function HomeScreen(props) {
             ); } else {return (<></>)}
           }}
         />
+        </View>
       <View style={styles.buttonContainer}>
       <FAB
         title='New Game'
         style={{margin:6}}
-        color='green'
+        color='#FFD600'
+        titleStyle={{
+          color: "black",
+        }}
         onPress={() => {
           navigation.navigate('Games', {type: 'new'})
         }}
@@ -120,7 +127,7 @@ function HomeScreen(props) {
       <FAB
         title='Sign Out'
         style={{margin:6}}
-        color='darkblue'
+        color='#191970'
         onPress={async () => {
           try {
             await signOut();
@@ -132,7 +139,7 @@ function HomeScreen(props) {
       <FAB
         title='Settings'
         style={{margin:6}}
-        color='blue'
+        color='#0000CD'
         onPress={() =>
           {
           navigation.navigate('Settings');
@@ -154,30 +161,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#0085D1'
   },
   buttonContainer: {
-    // paddingTop:'12%',
-    // flex: 1,
     flexDirection:'row',
     width: '100%',
-    padding:0,
+    paddingTop: '2%',
+    paddingBottom: '7%',
     justifyContent: 'center',
     alignItems: 'flex-end',
     backgroundColor: '#0085D1'
   },
+
   header: {
-    // paddingTop:'12%',
-    // flex: 1,
+    paddingTop:'5%',
     flexDirection:'row',
     width: '100%',
-    padding:0,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0085D1'
   },
-  listContainer: {
-    flex: 0.6,
+
+  listText: {
     width: '100%',
-    paddingLeft: '10%',
-    paddingTop: '10%'
+    paddingTop: '10%',
+    alignItems: 'center',
+  },
+
+  listContainer: {
+    flex: 1,
+    width: '100%',
+    paddingTop: '5%',
+    alignItems: 'center',
   },
   gameContainer: {
     backgroundColor: 'white',
@@ -203,7 +215,23 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   turnBox: {
-    backgroundColor: 'grey'
+    backgroundColor: 'grey',
+    padding: '2%',
+    paddingLeft: '10%',
+    paddingRight: '10%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+
+  activeText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 21,
+  },
+
+  turnText: {
+    color: 'white',
   }
 
 });

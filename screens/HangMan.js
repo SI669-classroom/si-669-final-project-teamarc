@@ -6,11 +6,12 @@ import {
 import { Button } from "@rneui/base";
 import { Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from "react-redux";
-import LogoImage from '../../components/LogoImage.js'
-import { getAuthUser } from "../../AuthManager.js";
-import { addGame } from "../../data/Actions.js";
-import FigureMan from './FigureMan.js'
-import { randomWord } from './Words.js'
+import LogoImage from '../components/LogoImage.js'
+import { getAuthUser } from "../AuthManager.js";
+import { addGame, updateGame, joinGame } from "../data/Actions.js";
+import FigureMan from '../components/FigureMan.js'
+import { randomWord } from '../components/Words.js'
+import { HangManBlank } from "../data/HangManBlank.js";
 
 
 
@@ -25,6 +26,7 @@ function HangManScreen(props) {
 
   const [correctGuesses, setCorrectGuesses] = useState([])
   const [wrongLetters, setWrongLetters] = useState('');
+  const [sendGame, setSendGame] = useState(HangManBlank)
 
   const maskedWord = word.split('').map(letter =>
     correctGuesses.includes(letter) ? letter : "_").join(" ");
@@ -35,20 +37,20 @@ function HangManScreen(props) {
   console.log(word)
   console.log(status)
 
-  const handlePopupButton = () => {
-    if (status === 'win') {
-      // go to next word
-      setCurrentIndex(i => i + 1)
-    }
-    // clear all stored data
-    setCorrectLetters('')
-    setWrongLetters('')
-    setStatus('')
-    // // replay
-    if (status === 'completed') {
-      setCurrentIndex(0);
-    }
-  }
+  // const handlePopupButton = () => {
+  //   if (status === 'win') {
+  //     // go to next word
+  //     setCurrentIndex(i => i + 1)
+  //   }
+  //   // clear all stored data
+  //   setCorrectLetters('')
+  //   setWrongLetters('')
+  //   setStatus('')
+  //   // // replay
+  //   if (status === 'completed') {
+  //     setCurrentIndex(0);
+  //   }
+  // }
 
   const updateStatus = (cl) => {
     let status = 'win';

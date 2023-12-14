@@ -6,7 +6,7 @@ import DetailsScreen from './screens/DetailsScreen';
 import PlaysScreen from './screens/PlaysScreen';
 import TicTacToeScreen from './screens/TicTacToeScreen';
 import DotsAndBoxesScreen from './screens/DotsAndBoxes';
-import HangManScreen from './screens/HangMan/HangMan';
+import HangManScreen from './screens/HangMan';
 import SettingsScreen from './screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
