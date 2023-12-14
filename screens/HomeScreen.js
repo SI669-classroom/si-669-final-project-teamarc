@@ -116,7 +116,10 @@ function HomeScreen(props) {
       <FAB
         title='New Game'
         style={{margin:6}}
-        color='green'
+        color='#FFD600'
+        titleStyle={{
+          color: "black",
+        }}
         onPress={() => {
           navigation.navigate('Games', {type: 'new'})
         }}
@@ -124,7 +127,7 @@ function HomeScreen(props) {
       <FAB
         title='Sign Out'
         style={{margin:6}}
-        color='darkblue'
+        color='#191970'
         onPress={async () => {
           try {
             await signOut();
@@ -136,7 +139,7 @@ function HomeScreen(props) {
       <FAB
         title='Settings'
         style={{margin:6}}
-        color='blue'
+        color='#0000CD'
         onPress={() =>
           {
           navigation.navigate('Settings');
@@ -158,11 +161,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#0085D1'
   },
   buttonContainer: {
-    // paddingTop:'12%',
-    // flex: 1,
     flexDirection:'row',
     width: '100%',
-    padding:0,
+    paddingTop: '2%',
+    paddingBottom: '7%',
     justifyContent: 'center',
     alignItems: 'flex-end',
     backgroundColor: '#0085D1'
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     width: '100%',
-    paddingTop: '10%',
+    paddingTop: '5%',
     alignItems: 'center',
   },
   gameContainer: {
