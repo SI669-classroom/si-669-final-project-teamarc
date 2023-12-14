@@ -84,9 +84,10 @@ function HomeScreen(props) {
         <View style={styles.header}>
         <UserIcon avatar={av} b='black' />  
         </View>
-      <View style={styles.listContainer}>
+      <View style={styles.listText}>
       <Text style={styles.activeText}>Active Games</Text>
       </View>
+      <View style={styles.listContainer}>
       <FlatList
           data={myGames}
           renderItem={({item})=>{
@@ -110,6 +111,7 @@ function HomeScreen(props) {
             ); } else {return (<></>)}
           }}
         />
+        </View>
       <View style={styles.buttonContainer}>
       <FAB
         title='New Game'
@@ -175,8 +177,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#0085D1'
   },
 
+  listText: {
+    width: '100%',
+    paddingTop: '10%',
+    alignItems: 'center',
+  },
+
   listContainer: {
-    flex: 0.3,
+    flex: 1,
     width: '100%',
     paddingTop: '10%',
     alignItems: 'center',
