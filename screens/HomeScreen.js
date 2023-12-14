@@ -215,6 +215,8 @@ const styles = StyleSheet.create({
   turnBox: {
     backgroundColor: 'grey',
     padding: '2%',
+    paddingLeft: '10%',
+    paddingRight: '10%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5,
