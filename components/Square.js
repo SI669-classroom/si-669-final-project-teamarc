@@ -1,4 +1,4 @@
-//Square.js - makeup of each of the square in tic tac toe
+//Square.js - makeup of each of the squares in tic tac toe 
 
 
 import { useState } from 'react';
