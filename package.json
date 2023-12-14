@@ -13,7 +13,7 @@
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.1",
     "@reduxjs/toolkit": "^1.9.7",
-    "expo": "^49.0.0",
+    "expo": "^49.0.21",
     "expo-status-bar": "~1.6.0",
     "firebase": "^10.5.2",
     "random-words": "^2.0.0",
