@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Image, StyleSheet, useWindowDimensions } from 'react-native'
 // import {DigiArcadeLogo.svg} from '../image';
 
-const LogoImage = () => (
+
+
+function LogoImage() {
+   const {width} = useWindowDimensions();
+   const height = Math.round((width * 1) / 8);
+   return (
    <Image 
-   style={styles.image}
+   style={[styles.image,{height:height}]}
    source = {require('../images/DigiArcadeLogo.png')} />
-)
+)}
 
 const styles = StyleSheet.create({
    image: {

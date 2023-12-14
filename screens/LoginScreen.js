@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, KeyboardAvoidingView, ScrollView, useWindowDimensions } from 'react-native';
 import { Button } from '@rneui/themed';
 import { useDispatch } from 'react-redux';
 
@@ -163,17 +163,17 @@ function LoginScreen({navigation}) {
   return (
     <View style={styles.container}>
       <LogoImage />
-      <View style={styles.bodyContainer}>
-        <KeyboardAvoidingView behavior='padding' >
+      {/* <View style={styles.bodyContainer}> */}
+
         {loginMode?
           <SigninBox navigation={navigation}/>
         :
           <SignupBox navigation={navigation}/>
         }
-        </KeyboardAvoidingView>
-        </View>
-        <KeyboardAvoidingView behavior='position'>
-      <View styles={styles.modeSwitchContainer}>
+
+        {/* </View> */}
+
+      <View style={styles.modeSwitchContainer}>
         { loginMode ? 
           <Text style={{color: 'white'}}>New user? {'  '}  
             <Text 
@@ -190,7 +190,7 @@ function LoginScreen({navigation}) {
           </Text>
         }
       </View>
-      </KeyboardAvoidingView>
+
     </View>
   );
 }
@@ -198,51 +198,58 @@ function LoginScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection:'column',
     width: '100%',
     backgroundColor: '#0085D1',
     paddingTop: '30%',
     alignItems: 'center',
+    alignContent:'flex-start',
     justifyContent: 'flex-start',
   },
   bodyContainer: {
     flex: 0.55,
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: 'tan'
+    backgroundColor: 'tan'
   },
   loginContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    // alignContent:'center',
     width: '100%',
-    paddingTop: '15%',
+    // height:'50%',
+    // paddingTop: '15%',
     paddingBottom: '10%',
-    //backgroundColor: 'lightblue'
+    // backgroundColor: 'black'
   },
   loginHeader: {
     width: '100%',
     padding: '3%',
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: 'tan'
+    // backgroundColor: 'tan'
   },
   loginHeaderText: {
     fontSize: 24,
     color: 'white',
-    paddingBottom: '5%'
+    // paddingBottom: '5%'
+    // backgroundColor:'yellow'
   },
   loginRow: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
+    alignContent:'center',
     width: '100%',
-    //backgroundColor: 'pink',
-    padding: '3%'
+    // backgroundColor: 'blue',
+    padding: 15,
   },
   loginLabelContainer: {
     flex: 0.3,
     justifyContent: 'center',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    // backgroundColor:'green',
   },
   loginLabelText: {
     fontSize: 18
@@ -251,7 +258,8 @@ const styles = StyleSheet.create({
     flex: 0.5,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    width: '100%'
+    width: '100%',
+    // backgroundColor:'red'
   },
   loginInputBox: {
     width: '100%',
@@ -259,23 +267,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 6,
     fontSize: 18,
-    padding: '4%'
+    padding: '4%',
+    // backgroundColor:'black'
   },
   modeSwitchContainer:{
-    flex: 0.2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: 'blue'
+    // flex: .2,
+    // justifyContent: 'center',
+    // alignSelf:'flex-start',
+    // alignItems: 'flex-start',
+    // width: '100%',
+    // backgroundColor: 'blue'
   },
   loginButtonRow: {
     width: '100%',
     justifyContent: 'center', 
-    alignItems: 'center'
+    alignItems: 'center',
+    // backgroundColor:'orange'
   },
   listContainer: {
     flex: 0.7, 
-    backgroundColor: '#ccc',
+    // backgroundColor: 'pink',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%', 
