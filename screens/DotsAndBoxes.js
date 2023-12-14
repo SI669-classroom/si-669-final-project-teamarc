@@ -221,6 +221,7 @@ function DotsAndBoxesScreen(props) {
 
 {/* THIS IS THE SEND BUTTON */}
         <View style={styles.allButtons}>
+          
           <Button
             color="#FFD600"
             buttonStyle={{

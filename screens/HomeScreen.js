@@ -24,26 +24,30 @@ function HomeScreen(props) {
   const turnBox = (n) => {
     if (n===0) {
       return (
-        <View style={[styles.turnBox, {backgroundColor:'green'}]}>
+        <View style={[styles.turnBox, {backgroundColor:'#0c1'}]}>
+          <View>
           <Text style={styles.turnText}>My Turn</Text>
+          </View>
         </View>
       )
     }
     return (
       <View style={[styles.turnBox]}>
-        <Text style={styles.turnText}>Their Turn</Text>
+          <View>
+          <Text style={styles.turnText}>Their Turn</Text>
+          </View>
       </View>
     )
   }
   const checkTurn = (i) => {
     if (myId === i.players[0] & i.turn === 'p1') {
-      return turnBox(0)
+      return 0
     }
     if (myId === i.players[1] & i.turn === 'p2') {
-      return turnBox(0)
+      return 0
     }
     else {
-      return turnBox(1)
+      return 1
     }
   }
   const checkFinish = (i) => {
@@ -91,16 +95,17 @@ function HomeScreen(props) {
       <FlatList
           data={myGames}
           renderItem={({item})=>{
-            let img = `../images/${item.type}Icon.png`
+            // let img = `../images/${item.type}Icon.png`
             if (!checkFinish(item)) {
             return (
               <TouchableOpacity
                 onPress={()=>{navigation.navigate(item.type, {type: item.key})}}
               >
-              <View key={item.key} style={styles.gameContainer}>
+              <View key={item.key} style={[styles.gameContainer,(checkTurn(item)===0?{borderColor:'#0c1'}:{borderColor:'lightgray'})]}>
               <View>
-                <Text>{checkTurn(item)}</Text>
-                <Text>Game: {item?.type}</Text>
+                {turnBox(checkTurn(item))}
+                <Text>Room: <Text style={{fontWeight:'bold'}}>{item.key.slice(-4)}</Text></Text>
+                {/* <Text>Game: {item.type}</Text> */}
               </View>
               <Image
             style={styles.image}
@@ -202,6 +207,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     borderRadius: 10,
     marginBottom: 20,
+    borderWidth:5,
+    borderColor:'white'
   },
   image: {
     height: 80,
@@ -215,13 +222,16 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   turnBox: {
+    alignSelf:'flex-start',
     backgroundColor: 'grey',
-    padding: '2%',
-    paddingLeft: '10%',
-    paddingRight: '10%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 10,
+    color:'yellow',
+    // paddingLeft: '10%',
+    // paddingRight: '10%',
+    // alignItems: 'center',
+    // justifyContent: 'center',
     borderRadius: 5,
+    
   },
 
   activeText: {
@@ -232,6 +242,7 @@ const styles = StyleSheet.create({
 
   turnText: {
     color: 'white',
+    
   }
 
 });
